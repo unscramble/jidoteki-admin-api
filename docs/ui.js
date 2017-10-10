@@ -421,7 +421,7 @@
 
   apiType = 'admin';
 
-  apiEndpoints = ['settings', 'certs', 'license', 'storage', 'backup'];
+  apiEndpoints = ['settings', 'certs', 'license', 'storage', 'backup', 'replication'];
 
 
   /* content functions */

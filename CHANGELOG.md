@@ -1,5 +1,7 @@
 # Changelog
 
+## 1.19.0 (TBD)
+
 ## 1.18.1 (2017-11-01)
 
   ### Minor fixes

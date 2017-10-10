@@ -39,7 +39,7 @@ These endpoints are optional and can only be enabled through `/usr/local/etc/jid
 
 ```
 {
-    "endpoints": ["settings", "certs", "license", "storage", "backup"],
+    "endpoints": ["settings", "certs", "license", "storage", "backup", "replication"],
     "parameters": ["public", "private", "ca", "license", "action", "archive"]
 }
 ```
@@ -52,7 +52,8 @@ These endpoints are optional and can only be enabled through `/usr/local/etc/jid
 | 9. [TLS](#tls) | `POST /certs` <br/> `GET /certs` | Updating the system's TLS certificates to replace the default self-signed certificates. |
 | 10. [License](#license) | `POST /license` <br/> `GET /license` | Viewing and changing the system license. |
 | 11. [Storage](#storage) | `POST /storage` <br/> `GET /storage` | Viewing and changing persistent storage options. |
-| 12. [Backup](#backup) | `POST /backup` <br/> `GET /backup` <br/> `GET /backup/download` <br/> `GET /backup/log` <br/> `POST /backup/restore` | Generating a backup, and viewing its status and log. Restore a backup |
+| 12. [Backup](#backup) | `POST /backup` <br/> `GET /backup` <br/> `GET /backup/download` <br/> `GET /backup/log` <br/> `POST /backup/restore` | Generating a backup, and viewing its status and log. Restore a backup. |
+| 13. [Replication](#replication) | `POST /replication` <br/> `GET /replication` <br/> `GET /replication/log` | Viewing and changing replication settings. |
 
 # <a name="setup"></a>1. Setup
 

@@ -10,7 +10,8 @@ apiEndpoints = [
   'certs',
   'license',
   'storage',
-  'backup'
+  'backup',
+  'replication'
   ]
 
 ### content functions ###
