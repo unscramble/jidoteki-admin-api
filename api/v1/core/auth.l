@@ -2,7 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
-# Copyright (c) 2015-2016 Alexander Williams, Unscramble <license@unscramble.jp>
+# Copyright (c) 2015-2017 Alexander Williams, Unscramble <license@unscramble.jp>
 
 [de get-sha256 (String Key)
   # works around output diff between openssl 0.9.8 and 1.0.x

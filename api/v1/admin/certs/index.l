@@ -2,7 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
-# Copyright (c) 2015-2016 Alexander Williams, Unscramble <license@unscramble.jp>
+# Copyright (c) 2015-2017 Alexander Williams, Unscramble <license@unscramble.jp>
 
 [de certs-log (Lines)
   (in (list 'tail "-n" Lines (pack *Admin_path "log/update_certs.log")) (pack (replace (till (eof)) "^J" "\\n") ]
@@ -16,18 +16,8 @@
 
     (list (append '("status") Status) (append '("log") Log) ]
 
-(de certs-get ()
+(de api-request-get ()
   (response-json (encode (certs-process))) )
-
-[de certs-update ()
-  (unless (fork)
-    (sys "SSH_ORIGINAL_COMMAND" "certs")
-    # use (exec) because we DONT want the result
-    (exec 'nohup (pack *Admin_path "bin/wrapper.sh")) )
-
-  (use Size Date Body
-    (json-string [encode (list (cons "Status" (pack 202 " " (http-code 202))) (cons "Location" "/api/v1/admin/certs")])
-    (response-generic 202 Size Date Body '(("Location" . "/api/v1/admin/certs") ("Content-Type" . "application/json")) ]
 
 (de certs-store (File Type)
   (let Filename
@@ -41,7 +31,7 @@
                 (http-msg 400) )
         (http-msg 400) ]
 
-[de certs-post ()
+[de api-request-post ()
   (let (Public  (get 'public 'http)
         Private (get 'private 'http)
         Ca      (get 'ca 'http) )
@@ -50,14 +40,11 @@
         (or (certs-store (tmp Public) "public_key")
             (certs-store (tmp Private) "private_key")
             (when Ca (certs-store (tmp Ca) "ca_key"))
-            (certs-update) )
+            (response-async "certs") )
         (http-msg 400) ]
 
-(de certs-request ()
-  (if (validate-auth)
-      (if *Post
-          (certs-post)
-          (certs-get) )
-      (http-msg 403) ) )
+(check-auth)
 
-(certs-request)
+(if *Post
+    (api-request-post)
+    (api-request-get) ]

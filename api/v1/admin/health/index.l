@@ -4,19 +4,7 @@
 #
 # Copyright (c) 2015-2017 Alexander Williams, Unscramble <license@unscramble.jp>
 
-(de health-exists ()
-  (info (pack *Admin_path "etc/health.json")) )
+[de api-request-get ()
+  (response-json-nocache (pack *Admin_path "etc/health.json") 200 T) ]
 
-[de health-get ()
-  (if (health-exists)
-      (response-json-nocache (pack *Admin_path "etc/health.json") 200 T)
-      (http-msg 404) ]
-
-(de health-request ()
-  (if (validate-auth)
-      (if *Post
-          (http-msg 400)
-          (health-get) )
-      (http-msg 403 "Authentication error") ) )
-
-(health-request)
+(check-auth "GET")

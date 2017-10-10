@@ -2,7 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
-# Copyright (c) 2015-2016 Alexander Williams, Unscramble <license@unscramble.jp>
+# Copyright (c) 2015-2017 Alexander Williams, Unscramble <license@unscramble.jp>
 
 [de update-log (Lines)
   (in (list 'tail "-n" Lines (pack *Admin_path "log/update.log")) (pack (replace (till (eof)) "^J" "\\n") ]
@@ -24,35 +24,18 @@
 
     (make (link (cons "status" Status)) (link (cons "log" Log)) (when Message (link (cons "error-message" Message))) (when Code (link (cons "error-code" Code) ]
 
-(de update-get ()
+(de api-request-get ()
   (response-json (encode (update-process))) )
 
-[de update-vm ()
-  (unless (fork)
-    (sys "SSH_ORIGINAL_COMMAND" "update")
-    # use (exec) because we DONT want the result
-    (exec 'nohup (pack *Admin_path "bin/wrapper.sh")) )
-
-  (use Size Date Body
-    (json-string [encode (list (cons "Status" (pack 202 " " (http-code 202))) (cons "Location" "/api/v1/admin/update")])
-    (response-generic 202 Size Date Body '(("Location" . "/api/v1/admin/update") ("Content-Type" . "application/json")) ]
-
-(de update-store (File)
+(de api-request-file (File)
   (call 'mv "-f" File (pack *Upload_path "software_package-zzz.enc"))
-  (update-vm) )
+  (response-async "update") )
 
-[de update-post ()
-  (let (Data (get 'update 'http)
-        File (tmp Data) )
-    (if (info File)
-        (update-store File)
-        (http-msg 400) ]
+[de api-request-post ()
+  (http-file 'update) ]
 
-(de update-request ()
-  (if (validate-auth)
-      (if *Post
-          (update-post)
-          (update-get) )
-      (http-msg 403) ) )
+(check-auth)
 
-(update-request)
+(if *Post
+    (api-request-post)
+    (api-request-get) ]

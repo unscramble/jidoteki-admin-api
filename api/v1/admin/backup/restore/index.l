@@ -11,15 +11,11 @@
             (audit-log "web" "admin" "backup.restore" "backup-archive.tar") )
       (http-msg 400 "Unable to extract backup archive") ]
 
-[de restore-store (File)
+[de api-request-file (File)
   (call 'mv "-f" File (pack *Upload_path "backup-archive.tar"))
   (restore-extract) ]
 
 [de api-request-post ()
-  (let (Data (get 'archive 'http)
-        File (tmp Data) )
-    (if (info File)
-        (restore-store File)
-        (http-msg 400) ]
+  (http-file 'archive) ]
 
 (check-auth "POST")

@@ -2,22 +2,13 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
-# Copyright (c) 2015-2016 Alexander Williams, Unscramble <license@unscramble.jp>
+# Copyright (c) 2015-2017 Alexander Williams, Unscramble <license@unscramble.jp>
 
 [de settings-fetch ()
   (let (App     (decode (pack *Admin_path "etc/app.json") T)
         Network (decode (pack *Admin_path "etc/network.json") T) )
 
     (list (append '("network") Network) (append '("app") App)) ]
-
-[de settings-update (Type)
-  (unless (fork)
-    (sys "SSH_ORIGINAL_COMMAND" (pack "settings " Type))
-    (call (pack *Admin_path "bin/wrapper.sh")) )
-
-  (use Size Date Body
-    (json-string [encode (list (cons "Status" (pack 202 " " (http-code 202))) (cons "Location" "/api/v1/admin/settings")])
-    (response-generic 202 Size Date Body '(("Location" . "/api/v1/admin/settings") ("Content-Type" . "application/json")) ]
 
 (de settings-static (Interface Ip_address Netmask Gateway Dns1 Dns2 Hostname Ntpserver)
   (out (pack *Upload_path "network.conf")
@@ -31,7 +22,7 @@
     (prin "dns=\"") (when Dns1 (prin @)) (when Dns2 (prin " " @)) (prinl "\"")
     (prin "hostname=\"") (when Hostname (prin @)) (prinl "\"")
     (prin "ntpserver=\"") (when Ntpserver (prin @)) (prinl "\"") )
-  (settings-update "static") )
+  (response-async "settings" "static") )
 
 (de settings-dhcp (Interface Hostname)
   (out (pack *Upload_path "network.conf")
@@ -41,7 +32,7 @@
         (prinl "interface=eth0") )
     (prin "hostname=\"") (when Hostname (prin @)) (prinl "\"")
     (prin "ntpserver=\"") (when Ntpserver (prin @)) (prinl "\"") )
-  (settings-update "dhcp") )
+  (response-async "settings" "dhcp") )
 
 [de settings-store (Settings)
   (let (App     (cdr (assoc "app" Settings))
@@ -63,26 +54,19 @@
           (settings-static Interface Ip_address Netmask Gateway Dns1 Dns2 Hostname Ntpserver)
           (settings-dhcp Interface Hostname Ntpserver) ]
 
-[de settings-parse (File)
+[de api-request-file (File)
   (if (decode File T)
       (settings-store @)
       (http-msg 400) ]
 
-[de settings-post ()
-  (let (Data (get 'settings 'http)
-        File (tmp Data) )
-    (if (info File)
-        (settings-parse File)
-        (http-msg 400) ]
+[de api-request-post ()
+  (http-file 'settings) ]
 
-(de settings-get ()
+(de api-request-get ()
   (response-json (encode (settings-fetch))) )
 
-(de settings-request ()
-  (if (validate-auth)
-      (if *Post
-          (settings-post)
-          (settings-get) )
-      (http-msg 403) ) )
+(check-auth)
 
-(settings-request)
+(if *Post
+    (api-request-post)
+    (api-request-get) ]

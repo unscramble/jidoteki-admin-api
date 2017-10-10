@@ -4,13 +4,8 @@
 #
 # Copyright (c) 2015-2017 Alexander Williams, Unscramble <license@unscramble.jp>
 
-[de changelog-get ()
+[de api-request-get ()
   (let Changelog (pack *Admin_path "etc/changelog.txt")
     (response-json-generic Changelog 200 T '(("Content-Type" . "text/plain") ("Cache-Control" . "no-cache"))) ]
 
-(de changelog-request ()
-  (if (validate-auth)
-      (unless *Post (changelog-get))
-      (http-msg 403) ) )
-
-(changelog-request)
+(check-auth "GET")

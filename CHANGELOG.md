@@ -10,6 +10,7 @@
   * Add '/endpoints' endpoint to list all API endpoints
   * Ensure '/health' endpoint is not cached
   * Add the ability to disable "optional" API endpoints (ex: '/backup')
+  * Refactor redundant functions
 
 ## 1.17.0 (2017-10-02)
 
