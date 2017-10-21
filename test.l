@@ -17,4 +17,4 @@
 (chdir "test/"
   (load "test_app.l" "test_core.l" "test_regressions.l") )
 
-(unit~report)
+(report)

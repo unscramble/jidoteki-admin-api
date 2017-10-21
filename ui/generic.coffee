@@ -118,7 +118,7 @@ failedUpload = (msg, message) ->
   $(".jido-page-content-#{msg} .progress .progress-bar").removeClass 'progress-bar-striped'
   $(".jido-page-content-#{msg} .progress .progress-bar").addClass 'progress-bar-danger'
   $(".jido-page-content-#{msg} .progress .progress-bar").attr 'aria-valuenow', 100
-  $(".jido-page-content-#{msg} .progress .progress-bar").html message
+  $(".jido-page-content-#{msg} .progress .progress-bar").html validator.escape(message)
   $(".jido-page-content-#{msg} .progress .progress-bar").attr 'style', 'width: 100%'
   $(".#{msg}-form").show()
   $(".#{msg}-alert").hide()
@@ -128,9 +128,9 @@ getStatus = (msg, callback) ->
     if err
       callback new Error(err)
     else
-      $(".jido-data-#{msg}-status").html result.status
+      $(".jido-data-#{msg}-status").html validator.escape(result.status)
       if result.log
-        $(".jido-data-#{msg}-log").html(if typeof result.log is 'object' then "No log file found" else result.log.replace(/\\n/g,'<br/>'))
+        $(".jido-data-#{msg}-log").html(if typeof result.log is 'object' then "No log file found" else validator.escape(result.log).replace(/\\n/g,'<br/>'))
 
       label = switch result.status
         when "failed"     then "label-danger"
@@ -149,7 +149,7 @@ getStatus = (msg, callback) ->
 
       if result['error-code'] and result['error-message'] and result.status == 'failed'
         $(".jido-data-#{msg}-status-error").show()
-        $(".jido-data-#{msg}-status-error-message").html "#{result['error-code']}: #{result['error-message']}"
+        $(".jido-data-#{msg}-status-error-message").html "#{validator.escape(result['error-code'])}: #{validator.escape(result['error-message'])}"
       else
         $(".jido-data-#{msg}-status-error").hide()
         $(".jido-data-#{msg}-status-error-message").html ''

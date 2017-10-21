@@ -99,6 +99,12 @@ To minify the JavaScript, type: `make minify`
 
 To do everything at once, type: `make ui`
 
+# Changelogs
+
+* [Changelog](CHANGELOG.md)
+* [Changelog 2016](CHANGELOG-2016.md)
+* [Changelog 2015](CHANGELOG-2015.md)
+
 # License
 
 [MPL-2.0 License](LICENSE)

@@ -2,15 +2,65 @@
 
 ## 1.18.0 (TBD)
 
-  * Update Fontello fonts
-  * Minor update to the look and feel of main sections
-  * Add Jidoteki footer to bottom of Dashboard UI
-  * Add audit-logging to authentication and new API calls
-  * Add '/backup' endpoints to create/delete/restore a backup
-  * Add '/endpoints' endpoint to list all API endpoints
-  * Ensure '/health' endpoint is not cached
-  * Add the ability to disable "optional" API endpoints (ex: '/backup')
-  * Refactor redundant functions
+  ### Bug fixes
+
+  * [api/dashboard] Jidoteki issue #416 - Authenticated API endpoint validation
+    Certain authenticated API endpoints are not validating the length of strings,
+    or the type of data which can be submitted. This could lead to unexpected
+    behaviour or XSS script injection.
+    All API endpoints and dashboard forms are correctly validated and escaped as of `v1.18.0`
+
+  ### New features
+
+  * [api] Add `/backup` endpoints to create/delete/restore a backup
+  * [api] Add `/endpoints` endpoint to list all API endpoints
+  * [api] Add the ability to disable "optional" API endpoints (ex: `/backup`)
+  * [api] Add audit-logging to authentication and new API calls
+
+  ### Minor fixes
+
+  * [api] Ensure `/health` endpoint is not cached
+  * [api] Refactor redundant functions
+  * [api] Add regression tests for new features and validations
+  * [api] Removed PicoLisp namespaces/symbols in unit tests
+  * [dashboard] Update Fontello fonts
+  * [dashboard] Standardize the look and feel of each section
+  * [dashboard] Add Jidoteki footer to bottom of Dashboard UI
+  * [dashboard] Split API documentation into two main sections: `default` and `optional` endpoints
+
+  ### Potentially breaking changes
+
+  **HTTP security headers are included in every HTTPS request:**
+
+  * `Strict-Transport-Security: max-age=31536000 ; includeSubDomains`
+  * `X-Frame-Options: deny`
+  * `X-XSS-Protection: 1`
+  * `X-Content-Type-Options: nosniff`
+
+  **All authenticated API endpoints are now validated, and will not accept missing or invalid data:**
+
+  * `POST /setup`: `newtoken` parameter only accepts printable ASCII characters (ASCII codes 33-126, no spaces)
+  This change does not affect existing tokens which may contain non-printable characters
+  * `POST /settings`: `settings` parameter validates each `network` value:
+    - **interface (required)**: `a-zA-Z0-9` (alphanumeric), between 3 and 14 characters
+      (Not required prior to `v1.18.0`)
+    - **hostname (required)**: `a-zA-Z0-9` (alphanumeric) + `.-`, between 3 and 255 characters
+      (Not required prior to `v1.18.0`)
+    - **ip_address**: `abcdef0123456789ABCDEF.:`, between 3 and 45 characters
+    - **netmask**: `abcdef0123456789ABCDEF.:`, between 3 and 45 characters
+    - **gateway**: `abcdef0123456789ABCDEF.:`, between 3 and 45 characters
+    - **dns1**: `abcdef0123456789ABCDEF.:`, between 3 and 45 characters
+    - **dns2**: `abcdef0123456789ABCDEF.:`, between 3 and 45 characters
+    - **ntpserver**: `a-zA-Z0-9` (alphanumeric) + `.-:`, between 3 and 255 characters
+
+  **All "optional" endpoints are disabled by default:**
+
+  * Configure the `/usr/local/etc/jidoteki-admin-api.json` file to enable the endpoints
+   (network settings, certs, license, storage, backup)
+
+  **"400 Bad Request" responses are descriptive:**
+
+  * Many (not all) `400 Bad Request` responses now contain an `Error-Message` string and HTTP header
 
 ## 1.17.0 (2017-10-02)
 
@@ -42,135 +92,3 @@
 
   * Add endpoint to upload and update persistent Storage options
   * Fix short auth token issue by limiting Token to 1-255 chars #25
-
-## 1.12.0 (2016-10-27)
-
-  * Display RRD graphs in 'Monitor' (new) section
-  * Fix '/certs' validation bypass. #22
-  * Add '/services' endpoint. #11
-  * Add 'error-message' and 'error-code' to update status responses. #23
-  * Various minor fixes
-
-## 1.11.0 (2016-08-29)
-
-  * Add 'JIDO_API_CUSTOM' env variable for loading custom API code, docs, html
-
-## 1.10.2 (2016-04-30)
-
-  * Update API Documentation to be much more clear and better organized
-
-## 1.10.1 (2016-04-23)
-
-  * Replace original FontAwesome fonts with smaller Fontello/FA font files
-
-## 1.10.0 (2016-04-17)
-
-  * Add Admin UI for web-based API management
-
-## 1.9.1 (2016-04-17)
-
-  * Fix issue #17 - HMAC auth bypassed when no token is set
-
-## 1.9.0 (2016-04-12)
-
-  * Add HMAC signature-based authentication
-  * Add new text/markdown mime type
-  * Update documentation explaining HMAC authentication
-  * Implement fix to hide source code when calling a /default file directly
-  * Fix issue #15 - Admin API crashes when 'update.log' is missing
-  * Fix issue #16 - Missing certs status
-
-## 1.8.0 (2016-04-06)
-
-  * Add endpoint to upload and update TLS certificates
-
-## 1.7.0 (2016-04-04)
-
-  * Add endpoint to retrieve an encrypted debug bundle
-
-## 1.6.1 (2016-03-31)
-
-  * Fix issue #12 - Server cannot start when JIDO_API_PORT env var (patrixl)
-  * Apply identical fix in #12 to JIDO_API_VERSION env var
-
-## 1.6.0 (2016-03-22)
-
-  * Use software packages with '.enc' extension instead of '.asc'
-
-## 1.5.0 (2015-09-26)
-
-  * Add endpoint to reboot the system
-  * Update documentation to reflect the API's ability to manage all types of systems
-
-## 1.4.0 (2015-09-22)
-
-  * Make network interface configurable by outputting 'interface' to network.conf in static/dhcp mode (defaults to eth0)
-
-## 1.3.1 (2015-09-20)
-
-  * Output 'hostname' in dhcp mode as well
-
-## 1.3.0 (2015-09-20)
-
-  * Replace 'sudo' commands with calls to 'wrapper.sh'
-
-## 1.2.2 (2015-09-16)
-
-  * Output 'hostname' to network.conf
-
-## 1.2.1 (2015-09-16)
-
-  * Output network settings to network.conf in 'key=value' format
-
-## 1.2.0 (2015-09-07)
-
-  * Add support for running on a 32-bit OS
-  * Increase minimum PicoLisp requirement to 3.1.10.2+ (json.l)
-
-## 1.1.7 (2015-08-26)
-
-  * Remove hardcoded paths for the Admin_path
-  * Add 'JIDO_ADMIN_PATH' env variable for Admin_path
-  * Update documentation
-
-## 1.1.6 (2015-08-21)
-
-  * Add endpoint to retrive the changelog of the appliance
-  * Update API documentation
-
-## 1.1.5 (2015-07-08)
-
-  * Use 'nohup' when processing vm update, to detach it from the parent
-
-## 1.1.4 (2015-07-08)
-
-  * Update dependency versions
-
-## 1.1.3 (2015-07-08)
-
-  * Add REPO_PREFIX to 'Makefile' to specify alternate path of git repos
-  * Actually add the code to fetch the API version
-
-## 1.1.2 (2015-07-06)
-
-  * Add endpoint to retrieve the version of the appliance
-
-## 1.1.1 (2015-07-06)
-
-  * Add endpoint to retrieve compressed logs
-
-## 1.1.0 (2015-07-03)
-
-  * Return JSON body during POST settings/update
-  * Update documentation
-
-## 1.0.2 (2015-06-22)
-
-  * Disable fips in stunnel config (bug in CentOS 6.6)
-
-## 1.0.1 (2015-06-18)
-
-  * Add initial CHANGELOG.md
-  * Add 'JIDO_STUNNEL_BIN' env variable for stunnel binary fullpath
-  * Rename API process to 'jido-api' at boot
-  * Update dependency versions

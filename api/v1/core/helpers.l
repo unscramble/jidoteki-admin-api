@@ -11,6 +11,16 @@
   (403 . "Forbidden")
   (404 . "Not Found") )
 
+(setq
+  *Ascii_codes_printable    (pack (mapcar char (range 33 126)))
+  *Ascii_codes_alphanumeric (pack (mapcar char (append (range 48 57) (range 65 90) (range 97 122))))
+  *Ascii_codes_ipaddress    "abcdef0123456789ABCDEF.:"
+  *Ascii_codes_fqdn         (pack *Ascii_codes_alphanumeric ".-") )
+
+(setq
+  *Range_ipaddress  (3 . 45)
+  *Range_fqdn       (3 . 255) )
+
 (de http-code (Code)
   (cdr (assoc Code *Http_codes)) )
 
@@ -71,6 +81,10 @@
 [de response-generic (Code Size Date Body Headers)
   (prinl "HTTP/1.1 " Code " " (http-code Code) "^M")
   (prinl "Server: PicoLisp^M")
+  (prinl "Strict-Transport-Security: max-age=31536000 ; includeSubDomains")
+  (prinl "X-Frame-Options: deny")
+  (prinl "X-XSS-Protection: 1")
+  (prinl "X-Content-Type-Options: nosniff")
   (prin "Date: ")
   (httpDate (date T) (time T))
   (when Size
@@ -107,6 +121,26 @@
 [de http-file (Type)
   (let (Data (get Type 'http)
         File (tmp Data) )
-    (if (info File)
+    (if (nT (car (info File)))
         (api-request-file File)
         (http-msg 400) ]
+
+# returns 400 if a character isn't allowed
+# returns NIL otherwise
+(de validate-string (Value Option Chars)
+  (let Allowed (if Chars @ "abcdefghijklmnopqrstuvwxyz0123456789-_.,")
+    (when (find '((N) (not (sub? (lowc N) Allowed))) (chop Value))
+          (http-msg 400 (pack "Missing or invalid string for option: " Option ". Allowed: " Allowed)) ) ) )
+
+# returns 400 if the string isn't in the correct range
+# returns NIL otherwise
+(de validate-range (Value Option Range)
+  (if (in-range? Value (car Range) (cdr Range))
+      NIL
+      (http-msg 400 (pack "Invalid string length for option: " Option ". Allowed: >= " (car Range) " and <= " (cdr Range))) ) )
+
+# checks if a string is within the allowed range
+# returns T if in range
+# returns NIL if not in range
+(de in-range? (Value Min Max)
+  (and Value (>= (length Value) Min) (<= (length Value) Max)) )

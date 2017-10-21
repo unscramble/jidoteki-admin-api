@@ -76,7 +76,7 @@ POST
 
 **Parameters**
 
-* `newtoken` **(required)**: New API token, between 1 and 255 characters
+* `newtoken` **(required)**: New API token, between 1 and 255 printable ASCII characters between codes 33 and 126 inclusively.
 
 **Content-type**
 
@@ -184,7 +184,7 @@ POST
 
 **Parameters**
 
-* `newtoken` **(required)**: New API token
+* `newtoken` **(required)**: New API token, between 1 and 255 printable ASCII characters between codes 33 and 126 inclusively.
 
 **Content-type**
 
@@ -844,6 +844,19 @@ POST
 
 * `settings` **(required)**: JSON settings file
 
+**Settings validation (network)**
+
+- **interface (required)**: `a-zA-Z0-9` (alphanumeric), between 3 and 14 characters
+    (Not required prior to `v1.18.0`)
+- **hostname (required)**: `a-zA-Z0-9` (alphanumeric) + `.-`, between 3 and 255 characters
+    (Not required prior to `v1.18.0`)
+- **ip_address**: `abcdef0123456789ABCDEF.:`, between 3 and 45 characters
+- **netmask**: `abcdef0123456789ABCDEF.:`, between 3 and 45 characters
+- **gateway**: `abcdef0123456789ABCDEF.:`, between 3 and 45 characters
+- **dns1**: `abcdef0123456789ABCDEF.:`, between 3 and 45 characters
+- **dns2**: `abcdef0123456789ABCDEF.:`, between 3 and 45 characters
+- **ntpserver**: `a-zA-Z0-9` (alphanumeric) + `.-:`, between 3 and 255 characters
+
 **Content-type**
 
 ```
@@ -878,8 +891,7 @@ Omit the `ip_address, netmask, gateway` fields, and the network settings will au
 {
     "network": {
         "interface": "eth0",
-        "hostname": "test.host",
-        "ntpserver": "pool.ntp.org"
+        "hostname": "test.host"
     },
     "app": {
         "name": "testapp"

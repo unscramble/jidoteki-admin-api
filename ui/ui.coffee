@@ -25,7 +25,7 @@ loadHome = ->
 
   fetchData "/api/v1/admin/version", (err, result) ->
     unless err
-      $('.jido-data-platform-version').html result.version
+      $('.jido-data-platform-version').html validator.escape(result.version)
 
   fetchData "/api/v1/admin/settings", (err, result) ->
     unless err
@@ -37,13 +37,13 @@ loadHome = ->
 
         value = "" if typeof value is 'object'
 
-        "<li class=\"list-group-item\">#{capitalize key} <span class=\"pull-right text-primary\">#{value}</span></li>"
+        "<li class=\"list-group-item\">#{capitalize key} <span class=\"pull-right text-primary\">#{validator.escape(value)}</span></li>"
 
       $('.jido-data-network-info').html networkSettings
 
   fetchData "/api/v1/admin/changelog", (err, result) ->
     unless err
-      $('.jido-data-changelog').html result
+      $('.jido-data-changelog').html validator.escape(result)
 
   fetchData "/api/v1/admin/services", (err, result) ->
     unless err
@@ -51,9 +51,9 @@ loadHome = ->
       for service in result.services
         for key, value of service
           if value == 'running'
-            servicesStatus = servicesStatus + "<li class=\"list-group-item\"><i class=\"fa icon-ok-circled text-success\"></i> #{key} <span class=\"pull-right text-success\">#{value}</span></li>"
+            servicesStatus = servicesStatus + "<li class=\"list-group-item\"><i class=\"fa icon-ok-circled text-success\"></i> #{validator.escape(key)} <span class=\"pull-right text-success\">#{validator.escape(value)}</span></li>"
           else
-            servicesStatus = servicesStatus + "<li class=\"list-group-item\"><i class=\"fa icon-cancel-circled text-danger\"></i> #{key} <span class=\"pull-right text-danger\">#{value}</span></li>"
+            servicesStatus = servicesStatus + "<li class=\"list-group-item\"><i class=\"fa icon-cancel-circled text-danger\"></i> #{validator.escape(key)} <span class=\"pull-right text-danger\">#{validator.escape(value)}</span></li>"
 
       $('.jido-data-services-info').html servicesStatus
 
@@ -67,7 +67,7 @@ loadUpdateCerts = (msg) ->
 
   fetchData "/api/v1/admin/version", (err, result) ->
     unless err
-      $('.jido-data-platform-version').html result.version
+      $('.jido-data-platform-version').html validator.escape(result.version)
 
   getStatus msg, (result) ->
     if result.status is "running"
@@ -83,7 +83,7 @@ loadNetwork = ->
 
   fetchData "/api/v1/admin/version", (err, result) ->
     unless err
-      $('.jido-data-platform-version').html result.version
+      $('.jido-data-platform-version').html validator.escape(result.version)
 
   fetchData "/api/v1/admin/settings", (err, result) ->
     unless err
@@ -94,9 +94,9 @@ loadNetwork = ->
 
       networkSettings = for key, value of result.network
         value = "" if typeof value is 'object'
-        $("##{key}-input").val value
+        $("##{key}-input").val validator.escape(value)
 
-        "<li class=\"list-group-item\">#{capitalize key} <span class=\"pull-right label label-primary\">#{value}</span></li>"
+        "<li class=\"list-group-item\">#{capitalize key} <span class=\"pull-right label label-primary\">#{validator.escape(value)}</span></li>"
 
       $('.jido-data-network-info').html networkSettings
 
@@ -110,7 +110,7 @@ loadStorage = ->
 
   fetchData "/api/v1/admin/version", (err, result) ->
     unless err
-      $('.jido-data-platform-version').html result.version
+      $('.jido-data-platform-version').html validator.escape(result.version)
 
   fetchData "/api/v1/admin/storage", (err, result) ->
     unless err
@@ -133,20 +133,20 @@ loadStorage = ->
 
         switch result.storage.type
           when "nfs"
-            $("#storage-#{result.storage.type} .mount-input").val result.storage.mount_options
-            $("#storage-#{result.storage.type} .ip-input").val result.storage.ip
-            $("#storage-#{result.storage.type} .share-input").val result.storage.share
+            $("#storage-#{result.storage.type} .mount-input").val validator.escape(result.storage.mount_options)
+            $("#storage-#{result.storage.type} .ip-input").val validator.escape(result.storage.ip)
+            $("#storage-#{result.storage.type} .share-input").val validator.escape(result.storage.share)
           when "aoe"
-            $("#storage-#{result.storage.type} .device-input").val result.storage.device
+            $("#storage-#{result.storage.type} .device-input").val validator.escape(result.storage.device)
           when "iscsi"
-            $("#storage-#{result.storage.type} .ip-input").val result.storage.ip
-            $("#storage-#{result.storage.type} .target-input").val result.storage.target
-            $("#storage-#{result.storage.type} .username-input").val result.storage.username
-            $("#storage-#{result.storage.type} .password-input").val result.storage.password
+            $("#storage-#{result.storage.type} .ip-input").val validator.escape(result.storage.ip)
+            $("#storage-#{result.storage.type} .target-input").val validator.escape(result.storage.target)
+            $("#storage-#{result.storage.type} .username-input").val validator.escape(result.storage.username)
+            $("#storage-#{result.storage.type} .password-input").val validator.escape(result.storage.password)
           when "nbd"
-            $("#storage-#{result.storage.type} .ip-input").val result.storage.ip
-            $("#storage-#{result.storage.type} .port-input").val result.storage.port
-            $("#storage-#{result.storage.type} .export-input").val result.storage.export
+            $("#storage-#{result.storage.type} .ip-input").val validator.escape(result.storage.ip)
+            $("#storage-#{result.storage.type} .port-input").val validator.escape(result.storage.port)
+            $("#storage-#{result.storage.type} .export-input").val validator.escape(result.storage.export)
       else
         $("#storage-name-select option[value=local]").attr 'selected', true
 
@@ -160,7 +160,7 @@ loadSupport = ->
 
   fetchData "/api/v1/admin/version", (err, result) ->
     unless err
-      $('.jido-data-platform-version').html result.version
+      $('.jido-data-platform-version').html validator.escape(result.version)
 
 loadMonitor = ->
   $('#jido-page-login').hide()
@@ -172,7 +172,7 @@ loadMonitor = ->
 
   fetchData "/api/v1/admin/version", (err, result) ->
     unless err
-      $('.jido-data-platform-version').html result.version
+      $('.jido-data-platform-version').html validator.escape(result.version)
 
       monitorClick '1h'
 
@@ -186,7 +186,7 @@ loadBackup = ->
 
   fetchData "/api/v1/admin/version", (err, result) ->
     unless err
-      $('.jido-data-platform-version').html result.version
+      $('.jido-data-platform-version').html validator.escape(result.version)
 
   getStatus "backup", (result) ->
     if result.status is "running"
@@ -194,8 +194,8 @@ loadBackup = ->
     else if result.status is "success"
       $('#backupInfo').show()
       $('#jido-button-backup-stop').show()
-      $('#jido-page-backup pre.backup-status-filesize').html result.filesize
-      $('#jido-page-backup pre.backup-status-sha256').html result.sha256
+      $('#jido-page-backup pre.backup-status-filesize').html validator.escape(result.filesize)
+      $('#jido-page-backup pre.backup-status-sha256').html validator.escape(result.sha256)
     else
       $('#backupInfo').hide()
       $('#jido-button-backup-stop').hide()
@@ -274,6 +274,14 @@ networkButtonListener = ->
       $('.network-form .network-interface-label').html 'Interface (required)'
       $('.network-form .network-interface-label').focus()
       return
+
+    # ntpserver is not required, but if it's supplied, it must be valid
+    if json.network.ntpserver
+      if !validator.isFQDN(json.network.ntpserver) and !validator.isIP(json.network.ntpserver)
+        $('.network-form .network-ntpserver-label').parent().addClass 'has-error'
+        $('.network-form .network-ntpserver-label').html 'NTP Server (required)'
+        $('.network-form .network-ntpserver-label').focus()
+        return
 
     $('.jido-data-network-status').removeClass 'label-danger'
     $('.jido-data-network-status').removeClass 'label-success'
@@ -357,7 +365,7 @@ updateCertsButtonListener = (msg) ->
       unless err
         $("#jido-button-#{msg}-fulllog").addClass 'active'
         $(".jido-data-#{msg}-full-log").parent().show()
-        $(".jido-data-#{msg}-full-log").html(if result then result else "No log file found")
+        $(".jido-data-#{msg}-full-log").html(if result then validator.escape(result) else "No log file found")
 
 logsButtonListener = ->
   $('#jido-data-logs-files').click ->
@@ -404,24 +412,24 @@ storageButtonListener = ->
           $("#storage-#{json.storage.type} .ip-input").focus()
           return
 
-        unless json.storage.mount_options
-          $("#storage-#{json.storage.type} .storage-mount-label").parent().addClass 'has-error'
-          $("#storage-#{json.storage.type} .storage-mount-label").html 'Mount options (required)'
-          $("#storage-#{json.storage.type} .mount-input").focus()
+        unless json.storage.share and validator.isWhitelisted(json.storage.share, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-/")
+          $("#storage-#{json.storage.type} .storage-share-label").parent().addClass 'has-error'
+          $("#storage-#{json.storage.type} .storage-share-label").html 'Share path (required)<br/>Allowed: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-/'
+          $("#storage-#{json.storage.type} .share-input").focus()
           return
 
-        unless json.storage.share
-          $("#storage-#{json.storage.type} .storage-share-label").parent().addClass 'has-error'
-          $("#storage-#{json.storage.type} .storage-share-label").html 'Share path (required)'
-          $("#storage-#{json.storage.type} .share-input").focus()
+        unless json.storage.mount_options and validator.isWhitelisted(json.storage.mount_options, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789=,.-")
+          $("#storage-#{json.storage.type} .storage-mount-label").parent().addClass 'has-error'
+          $("#storage-#{json.storage.type} .storage-mount-label").html 'Mount options (required)<br/>Allowed: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789=,.-'
+          $("#storage-#{json.storage.type} .mount-input").focus()
           return
 
       when "aoe"
         json.storage.device = $("#storage-#{json.storage.type} .device-input").val()
 
-        unless json.storage.device
+        unless json.storage.device and validator.isWhitelisted(json.storage.device, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.")
           $("#storage-#{json.storage.type} .storage-device-label").parent().addClass 'has-error'
-          $("#storage-#{json.storage.type} .storage-device-label").html 'Device (required)'
+          $("#storage-#{json.storage.type} .storage-device-label").html 'Device (required)<br/>Allowed: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.'
           $("#storage-#{json.storage.type} .device-input").focus()
           return
 
@@ -437,21 +445,21 @@ storageButtonListener = ->
           $("#storage-#{json.storage.type} .ip-input").focus()
           return
 
-        unless json.storage.target
+        unless json.storage.target and validator.isWhitelisted(json.storage.target, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-:")
           $("#storage-#{json.storage.type} .storage-target-label").parent().addClass 'has-error'
-          $("#storage-#{json.storage.type} .storage-target-label").html 'Target (required)'
+          $("#storage-#{json.storage.type} .storage-target-label").html 'Target (required)<br/>Allowed: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-:'
           $("#storage-#{json.storage.type} .target-input").focus()
           return
 
-        unless json.storage.username
+        unless json.storage.username and validator.isAscii(json.storage.username)
           $("#storage-#{json.storage.type} .storage-username-label").parent().addClass 'has-error'
-          $("#storage-#{json.storage.type} .storage-username-label").html 'Username (required)'
+          $("#storage-#{json.storage.type} .storage-username-label").html 'Username (required)<br/>Allowed: ASCII characters'
           $("#storage-#{json.storage.type} .username-input").focus()
           return
 
-        unless json.storage.password
+        unless json.storage.password and validator.isAscii(json.storage.password)
           $("#storage-#{json.storage.type} .storage-password-label").parent().addClass 'has-error'
-          $("#storage-#{json.storage.type} .storage-password-label").html 'Password (required)'
+          $("#storage-#{json.storage.type} .storage-password-label").html 'Password (required)<br/>Allowed: ASCII characters'
           $("#storage-#{json.storage.type} .password-input").focus()
           return
 
@@ -466,15 +474,15 @@ storageButtonListener = ->
           $("#storage-#{json.storage.type} .ip-input").focus()
           return
 
-        unless json.storage.port
+        unless json.storage.port and validator.isNumeric(json.storage.port)
           $("#storage-#{json.storage.type} .storage-port-label").parent().addClass 'has-error'
           $("#storage-#{json.storage.type} .storage-port-label").html 'Port (required)'
           $("#storage-#{json.storage.type} .port-input").focus()
           return
 
-        unless json.storage.export_name
+        unless json.storage.export_name and validator.isWhitelisted(json.storage.export_name, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-/")
           $("#storage-#{json.storage.type} .storage-export-label").parent().addClass 'has-error'
-          $("#storage-#{json.storage.type} .storage-export-label").html 'Export name (required)'
+          $("#storage-#{json.storage.type} .storage-export-label").html 'Export name (required)<br/>Allowed: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-/'
           $("#storage-#{json.storage.type} .export-input").focus()
           return
 

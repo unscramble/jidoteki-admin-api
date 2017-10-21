@@ -138,7 +138,7 @@
     $(".jido-page-content-" + msg + " .progress .progress-bar").removeClass('progress-bar-striped');
     $(".jido-page-content-" + msg + " .progress .progress-bar").addClass('progress-bar-danger');
     $(".jido-page-content-" + msg + " .progress .progress-bar").attr('aria-valuenow', 100);
-    $(".jido-page-content-" + msg + " .progress .progress-bar").html(message);
+    $(".jido-page-content-" + msg + " .progress .progress-bar").html(validator.escape(message));
     $(".jido-page-content-" + msg + " .progress .progress-bar").attr('style', 'width: 100%');
     $("." + msg + "-form").show();
     return $("." + msg + "-alert").hide();
@@ -150,9 +150,9 @@
       if (err) {
         return callback(new Error(err));
       } else {
-        $(".jido-data-" + msg + "-status").html(result.status);
+        $(".jido-data-" + msg + "-status").html(validator.escape(result.status));
         if (result.log) {
-          $(".jido-data-" + msg + "-log").html(typeof result.log === 'object' ? "No log file found" : result.log.replace(/\\n/g, '<br/>'));
+          $(".jido-data-" + msg + "-log").html(typeof result.log === 'object' ? "No log file found" : validator.escape(result.log).replace(/\\n/g, '<br/>'));
         }
         label = (function() {
           switch (result.status) {
@@ -176,7 +176,7 @@
         }
         if (result['error-code'] && result['error-message'] && result.status === 'failed') {
           $(".jido-data-" + msg + "-status-error").show();
-          $(".jido-data-" + msg + "-status-error-message").html(result['error-code'] + ": " + result['error-message']);
+          $(".jido-data-" + msg + "-status-error-message").html((validator.escape(result['error-code'])) + ": " + (validator.escape(result['error-message'])));
         } else {
           $(".jido-data-" + msg + "-status-error").hide();
           $(".jido-data-" + msg + "-status-error-message").html('');
@@ -412,7 +412,7 @@
     $('#jido-page-dashboard').show();
     fetchData("/api/v1/admin/version", function(err, result) {
       if (!err) {
-        return $('.jido-data-platform-version').html(result.version);
+        return $('.jido-data-platform-version').html(validator.escape(result.version));
       }
     });
     fetchData("/api/v1/admin/settings", function(err, result) {
@@ -439,7 +439,7 @@
             if (typeof value === 'object') {
               value = "";
             }
-            results.push("<li class=\"list-group-item\">" + (capitalize(key)) + " <span class=\"pull-right text-primary\">" + value + "</span></li>");
+            results.push("<li class=\"list-group-item\">" + (capitalize(key)) + " <span class=\"pull-right text-primary\">" + (validator.escape(value)) + "</span></li>");
           }
           return results;
         })();
@@ -448,7 +448,7 @@
     });
     fetchData("/api/v1/admin/changelog", function(err, result) {
       if (!err) {
-        return $('.jido-data-changelog').html(result);
+        return $('.jido-data-changelog').html(validator.escape(result));
       }
     });
     return fetchData("/api/v1/admin/services", function(err, result) {
@@ -461,9 +461,9 @@
           for (key in service) {
             value = service[key];
             if (value === 'running') {
-              servicesStatus = servicesStatus + ("<li class=\"list-group-item\"><i class=\"fa icon-ok-circled text-success\"></i> " + key + " <span class=\"pull-right text-success\">" + value + "</span></li>");
+              servicesStatus = servicesStatus + ("<li class=\"list-group-item\"><i class=\"fa icon-ok-circled text-success\"></i> " + (validator.escape(key)) + " <span class=\"pull-right text-success\">" + (validator.escape(value)) + "</span></li>");
             } else {
-              servicesStatus = servicesStatus + ("<li class=\"list-group-item\"><i class=\"fa icon-cancel-circled text-danger\"></i> " + key + " <span class=\"pull-right text-danger\">" + value + "</span></li>");
+              servicesStatus = servicesStatus + ("<li class=\"list-group-item\"><i class=\"fa icon-cancel-circled text-danger\"></i> " + (validator.escape(key)) + " <span class=\"pull-right text-danger\">" + (validator.escape(value)) + "</span></li>");
             }
           }
         }
@@ -481,7 +481,7 @@
     $(".jido-page-content-" + msg).show();
     fetchData("/api/v1/admin/version", function(err, result) {
       if (!err) {
-        return $('.jido-data-platform-version').html(result.version);
+        return $('.jido-data-platform-version').html(validator.escape(result.version));
       }
     });
     return getStatus(msg, function(result) {
@@ -500,7 +500,7 @@
     $('#jido-page-network').show();
     fetchData("/api/v1/admin/version", function(err, result) {
       if (!err) {
-        return $('.jido-data-platform-version').html(result.version);
+        return $('.jido-data-platform-version').html(validator.escape(result.version));
       }
     });
     return fetchData("/api/v1/admin/settings", function(err, result) {
@@ -519,8 +519,8 @@
             if (typeof value === 'object') {
               value = "";
             }
-            $("#" + key + "-input").val(value);
-            results.push("<li class=\"list-group-item\">" + (capitalize(key)) + " <span class=\"pull-right label label-primary\">" + value + "</span></li>");
+            $("#" + key + "-input").val(validator.escape(value));
+            results.push("<li class=\"list-group-item\">" + (capitalize(key)) + " <span class=\"pull-right label label-primary\">" + (validator.escape(value)) + "</span></li>");
           }
           return results;
         })();
@@ -538,7 +538,7 @@
     $('#jido-page-storage').show();
     fetchData("/api/v1/admin/version", function(err, result) {
       if (!err) {
-        return $('.jido-data-platform-version').html(result.version);
+        return $('.jido-data-platform-version').html(validator.escape(result.version));
       }
     });
     return fetchData("/api/v1/admin/storage", function(err, result) {
@@ -580,20 +580,20 @@
           $("#storage-" + result.storage.type).show();
           switch (result.storage.type) {
             case "nfs":
-              $("#storage-" + result.storage.type + " .mount-input").val(result.storage.mount_options);
-              $("#storage-" + result.storage.type + " .ip-input").val(result.storage.ip);
-              return $("#storage-" + result.storage.type + " .share-input").val(result.storage.share);
+              $("#storage-" + result.storage.type + " .mount-input").val(validator.escape(result.storage.mount_options));
+              $("#storage-" + result.storage.type + " .ip-input").val(validator.escape(result.storage.ip));
+              return $("#storage-" + result.storage.type + " .share-input").val(validator.escape(result.storage.share));
             case "aoe":
-              return $("#storage-" + result.storage.type + " .device-input").val(result.storage.device);
+              return $("#storage-" + result.storage.type + " .device-input").val(validator.escape(result.storage.device));
             case "iscsi":
-              $("#storage-" + result.storage.type + " .ip-input").val(result.storage.ip);
-              $("#storage-" + result.storage.type + " .target-input").val(result.storage.target);
-              $("#storage-" + result.storage.type + " .username-input").val(result.storage.username);
-              return $("#storage-" + result.storage.type + " .password-input").val(result.storage.password);
+              $("#storage-" + result.storage.type + " .ip-input").val(validator.escape(result.storage.ip));
+              $("#storage-" + result.storage.type + " .target-input").val(validator.escape(result.storage.target));
+              $("#storage-" + result.storage.type + " .username-input").val(validator.escape(result.storage.username));
+              return $("#storage-" + result.storage.type + " .password-input").val(validator.escape(result.storage.password));
             case "nbd":
-              $("#storage-" + result.storage.type + " .ip-input").val(result.storage.ip);
-              $("#storage-" + result.storage.type + " .port-input").val(result.storage.port);
-              return $("#storage-" + result.storage.type + " .export-input").val(result.storage["export"]);
+              $("#storage-" + result.storage.type + " .ip-input").val(validator.escape(result.storage.ip));
+              $("#storage-" + result.storage.type + " .port-input").val(validator.escape(result.storage.port));
+              return $("#storage-" + result.storage.type + " .export-input").val(validator.escape(result.storage["export"]));
           }
         } else {
           return $("#storage-name-select option[value=local]").attr('selected', true);
@@ -611,7 +611,7 @@
     $('#jido-page-support').show();
     return fetchData("/api/v1/admin/version", function(err, result) {
       if (!err) {
-        return $('.jido-data-platform-version').html(result.version);
+        return $('.jido-data-platform-version').html(validator.escape(result.version));
       }
     });
   };
@@ -625,7 +625,7 @@
     $('#jido-page-monitor').show();
     return fetchData("/api/v1/admin/version", function(err, result) {
       if (!err) {
-        $('.jido-data-platform-version').html(result.version);
+        $('.jido-data-platform-version').html(validator.escape(result.version));
         return monitorClick('1h');
       }
     });
@@ -640,7 +640,7 @@
     $('#jido-page-backup').show();
     fetchData("/api/v1/admin/version", function(err, result) {
       if (!err) {
-        return $('.jido-data-platform-version').html(result.version);
+        return $('.jido-data-platform-version').html(validator.escape(result.version));
       }
     });
     return getStatus("backup", function(result) {
@@ -649,8 +649,8 @@
       } else if (result.status === "success") {
         $('#backupInfo').show();
         $('#jido-button-backup-stop').show();
-        $('#jido-page-backup pre.backup-status-filesize').html(result.filesize);
-        return $('#jido-page-backup pre.backup-status-sha256').html(result.sha256);
+        $('#jido-page-backup pre.backup-status-filesize').html(validator.escape(result.filesize));
+        return $('#jido-page-backup pre.backup-status-sha256').html(validator.escape(result.sha256));
       } else {
         $('#backupInfo').hide();
         return $('#jido-button-backup-stop').hide();
@@ -745,6 +745,14 @@
         $('.network-form .network-interface-label').html('Interface (required)');
         $('.network-form .network-interface-label').focus();
         return;
+      }
+      if (json.network.ntpserver) {
+        if (!validator.isFQDN(json.network.ntpserver) && !validator.isIP(json.network.ntpserver)) {
+          $('.network-form .network-ntpserver-label').parent().addClass('has-error');
+          $('.network-form .network-ntpserver-label').html('NTP Server (required)');
+          $('.network-form .network-ntpserver-label').focus();
+          return;
+        }
       }
       $('.jido-data-network-status').removeClass('label-danger');
       $('.jido-data-network-status').removeClass('label-success');
@@ -844,7 +852,7 @@
         if (!err) {
           $("#jido-button-" + msg + "-fulllog").addClass('active');
           $(".jido-data-" + msg + "-full-log").parent().show();
-          return $(".jido-data-" + msg + "-full-log").html(result ? result : "No log file found");
+          return $(".jido-data-" + msg + "-full-log").html(result ? validator.escape(result) : "No log file found");
         }
       });
     });
@@ -905,24 +913,24 @@
             $("#storage-" + json.storage.type + " .ip-input").focus();
             return;
           }
-          if (!json.storage.mount_options) {
-            $("#storage-" + json.storage.type + " .storage-mount-label").parent().addClass('has-error');
-            $("#storage-" + json.storage.type + " .storage-mount-label").html('Mount options (required)');
-            $("#storage-" + json.storage.type + " .mount-input").focus();
+          if (!(json.storage.share && validator.isWhitelisted(json.storage.share, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-/"))) {
+            $("#storage-" + json.storage.type + " .storage-share-label").parent().addClass('has-error');
+            $("#storage-" + json.storage.type + " .storage-share-label").html('Share path (required)<br/>Allowed: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-/');
+            $("#storage-" + json.storage.type + " .share-input").focus();
             return;
           }
-          if (!json.storage.share) {
-            $("#storage-" + json.storage.type + " .storage-share-label").parent().addClass('has-error');
-            $("#storage-" + json.storage.type + " .storage-share-label").html('Share path (required)');
-            $("#storage-" + json.storage.type + " .share-input").focus();
+          if (!(json.storage.mount_options && validator.isWhitelisted(json.storage.mount_options, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789=,.-"))) {
+            $("#storage-" + json.storage.type + " .storage-mount-label").parent().addClass('has-error');
+            $("#storage-" + json.storage.type + " .storage-mount-label").html('Mount options (required)<br/>Allowed: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789=,.-');
+            $("#storage-" + json.storage.type + " .mount-input").focus();
             return;
           }
           break;
         case "aoe":
           json.storage.device = $("#storage-" + json.storage.type + " .device-input").val();
-          if (!json.storage.device) {
+          if (!(json.storage.device && validator.isWhitelisted(json.storage.device, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789."))) {
             $("#storage-" + json.storage.type + " .storage-device-label").parent().addClass('has-error');
-            $("#storage-" + json.storage.type + " .storage-device-label").html('Device (required)');
+            $("#storage-" + json.storage.type + " .storage-device-label").html('Device (required)<br/>Allowed: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.');
             $("#storage-" + json.storage.type + " .device-input").focus();
             return;
           }
@@ -938,21 +946,21 @@
             $("#storage-" + json.storage.type + " .ip-input").focus();
             return;
           }
-          if (!json.storage.target) {
+          if (!(json.storage.target && validator.isWhitelisted(json.storage.target, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-:"))) {
             $("#storage-" + json.storage.type + " .storage-target-label").parent().addClass('has-error');
-            $("#storage-" + json.storage.type + " .storage-target-label").html('Target (required)');
+            $("#storage-" + json.storage.type + " .storage-target-label").html('Target (required)<br/>Allowed: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-:');
             $("#storage-" + json.storage.type + " .target-input").focus();
             return;
           }
-          if (!json.storage.username) {
+          if (!(json.storage.username && validator.isAscii(json.storage.username))) {
             $("#storage-" + json.storage.type + " .storage-username-label").parent().addClass('has-error');
-            $("#storage-" + json.storage.type + " .storage-username-label").html('Username (required)');
+            $("#storage-" + json.storage.type + " .storage-username-label").html('Username (required)<br/>Allowed: ASCII characters');
             $("#storage-" + json.storage.type + " .username-input").focus();
             return;
           }
-          if (!json.storage.password) {
+          if (!(json.storage.password && validator.isAscii(json.storage.password))) {
             $("#storage-" + json.storage.type + " .storage-password-label").parent().addClass('has-error');
-            $("#storage-" + json.storage.type + " .storage-password-label").html('Password (required)');
+            $("#storage-" + json.storage.type + " .storage-password-label").html('Password (required)<br/>Allowed: ASCII characters');
             $("#storage-" + json.storage.type + " .password-input").focus();
             return;
           }
@@ -967,15 +975,15 @@
             $("#storage-" + json.storage.type + " .ip-input").focus();
             return;
           }
-          if (!json.storage.port) {
+          if (!(json.storage.port && validator.isNumeric(json.storage.port))) {
             $("#storage-" + json.storage.type + " .storage-port-label").parent().addClass('has-error');
             $("#storage-" + json.storage.type + " .storage-port-label").html('Port (required)');
             $("#storage-" + json.storage.type + " .port-input").focus();
             return;
           }
-          if (!json.storage.export_name) {
+          if (!(json.storage.export_name && validator.isWhitelisted(json.storage.export_name, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-/"))) {
             $("#storage-" + json.storage.type + " .storage-export-label").parent().addClass('has-error');
-            $("#storage-" + json.storage.type + " .storage-export-label").html('Export name (required)');
+            $("#storage-" + json.storage.type + " .storage-export-label").html('Export name (required)<br/>Allowed: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-/');
             $("#storage-" + json.storage.type + " .export-input").focus();
             return;
           }

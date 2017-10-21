@@ -42,7 +42,7 @@ $(TEST_DIR):
 check: all $(TEST_DIR) run-tests
 
 run-tests:
-		./test.l
+		PIL_NAMESPACES=false ./test.l
 
 html:
 		jade -o . -P -E html ui/index.jade
