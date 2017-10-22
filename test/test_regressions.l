@@ -31,7 +31,8 @@
       # file must be copied into child (pipe)
       (when
         (call 'cp "-f" "settings-invalid.json" (tmp 'settings))
-        (load "../api/v1/admin/settings/index.l") )
+        (chdir ".."
+          (load "api/v1/admin/settings/index.l" ) ) )
 
       (when
         (= (line) '("H" "T" "T" "P" "/" "1" "." "1" " " "4" "0" "0" " " "B" "a" "d" " " "R" "e" "q" "u" "e" "s" "t"))
@@ -42,7 +43,8 @@
       # file must be copied into child (pipe)
       (when
         (call 'cp "-f" "settings.json" (tmp 'settings))
-        (load "../api/v1/admin/settings/index.l") )
+        (chdir ".."
+          (load "api/v1/admin/settings/index.l" ) ) )
 
       (when
         (= (line) '("H" "T" "T" "P" "/" "1" "." "1" " " "2" "0" "2" " " "A" "c" "c" "e" "p" "t" "e" "d"))

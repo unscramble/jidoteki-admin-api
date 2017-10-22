@@ -18,7 +18,7 @@
 
 [de test-response-json ()
   (pipe
-    (response-json (if *CPU "{\"Status\":\"200 OK\"}" "{\"Status\": \"200 OK\"}"))
+    (response-json "{\"Status\": \"200 OK\"}")
     (when
       (and
         (= (line) '("H" "T" "T" "P" "/" "1" "." "1" " " "2" "0" "0" " " "O" "K"))

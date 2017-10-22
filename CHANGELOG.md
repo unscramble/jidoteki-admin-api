@@ -27,6 +27,7 @@
   * [dashboard] Standardize the look and feel of each section
   * [dashboard] Add Jidoteki footer to bottom of Dashboard UI
   * [dashboard] Split API documentation into two main sections: `default` and `optional` endpoints
+  * [deps] Updated `picolisp-json` and `picolisp-unit` dependencies
 
   ### Potentially breaking changes
 

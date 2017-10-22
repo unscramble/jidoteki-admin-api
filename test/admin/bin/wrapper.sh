@@ -26,10 +26,10 @@ case "${SSH_ORIGINAL_COMMAND}" in
     sudo ${admin_dir}/bin/update_license.sh
     ;;
   "settings")
-    ${admin_dir}/bin/update_settings.sh "$1"
+    ./test/admin/bin/update_settings.sh "$1"
     ;;
   "token")
-    ${admin_dir}/bin/update_token.sh
+    ./admin/bin/update_token.sh
     ;;
   "logs")
     if [ -f "${admin_dir}/etc/logs.txt" ]; then
