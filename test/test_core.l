@@ -86,6 +86,16 @@
       (= (line) '("H" "T" "T" "P" "/" "1" "." "1" " " "4" "0" "0" " " "B" "a" "d" " " "R" "e" "q" "u" "e" "s" "t"))
       T ]
 
+(de test-validate-string-range-valid ()
+  (validate-string-range "jidoteki" 'test-range-valid "jidoteki "(3 . 8)) )
+
+(de test-validate-string-range-invalid ()
+  (pipe
+    (validate-string-range "jidoteki" 'test-range-invalid "jidoteki" (3 . 7))
+    (when
+      (= (line) '("H" "T" "T" "P" "/" "1" "." "1" " " "4" "0" "0" " " "B" "a" "d" " " "R" "e" "q" "u" "e" "s" "t"))
+      T ]
+
 [execute
   '(assert-t      (validate-token "testtoken") "Ensure token gets validated")
   '(assert-nil    (validate-token "badtoken") "Ensure invalid token doesn't get validated")
@@ -110,4 +120,6 @@
   '(assert-nil    (in-range? "test12345" 1 8) "Ensure token is not more than 8 characters")
   '(assert-t      (in-range? "::1" (car *Range_ipaddress) (cdr *Range_ipaddress)) "Ensure IPv6 address is within range")
   '(assert-nil    (in-range? "1" (car *Range_ipaddress) (cdr *Range_ipaddress)) "Ensure IPv4 address is not within range")
+  '(assert-nil    (test-validate-string-range-valid) "Ensure string is valid, and range is between 1 and 8 characters")
+  '(assert-t      (test-validate-string-range-invalid) "Ensure string is valid, but range is not between 1 and 7 characters")
   ]

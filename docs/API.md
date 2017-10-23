@@ -1227,9 +1227,15 @@ If the license file is invalid or doesn't exist, `404 Not Found` will be returne
 
 Changing the storage options is an asynchronous procedure. The API will return a response immediately while the settings are updated in the background. Only one update can run at any given time.
 
-Storage type can be set to `local`, `nfs`, `aoe`, `iscsi`, `nbd` by uploading a _settings.json_ file.
-
 > **Note:** Storage types are only available based on options found in `/usr/local/etc/storage-options.json`.
+
+**Example**
+
+```
+{
+    "options": ["local", "aoe", "nfs", "nbd", "iscsi"]
+}
+```
 
 Settings are only applied after a reboot.
 
@@ -1252,6 +1258,33 @@ POST
 **Parameters**
 
 * `settings` **(required)**: JSON settings file
+
+**Settings validation (storage)**
+
+- **type (required)**: Allowed: `local`, `nfs`, `aoe`, `iscsi`, `nbd`
+
+[nfs]
+
+- **mount_options (required)**: `a-zA-Z0-9` (alphanumeric) + `.-=,`, between 3 and 255 characters
+- **ip (required)**: `abcdef0123456789ABCDEF.:`, between 3 and 45 characters
+- **share (required)**: `a-zA-Z0-9` (alphanumeric) + `.-_/`, between 3 and 255 characters
+
+[aoe]
+
+- **device (required)**: `a-zA-Z0-9` (alphanumeric) + `.-`, between 3 and 255 characters
+
+[iscsi]
+
+- **target (required)**: `a-zA-Z0-9` (alphanumeric) + `.-_:`, between 3 and 255 characters
+- **ip (required)**: `abcdef0123456789ABCDEF.:`, between 3 and 45 characters
+- **username (required)**: printable ASCII characters (ASCII codes 33-126, no spaces), between 3 and 255 characters
+- **password (required)**: printable ASCII characters (ASCII codes 33-126, no spaces), between 3 and 255 characters
+
+[nbd]
+
+- **export_name (required)**: `a-zA-Z0-9` (alphanumeric) + `.-_/`, between 3 and 255 characters
+- **ip (required)**: `abcdef0123456789ABCDEF.:`, between 3 and 45 characters
+- **port (required)**: `0-9` (numeric) + `.-_/`, between 1 and 5 characters
 
 **Content-type**
 
