@@ -139,6 +139,10 @@
       NIL
       (http-msg 400 (pack "Invalid string length for option: " Option ". Allowed: >= " (car Range) " and <= " (cdr Range))) ) )
 
+(de validate-string-range (Value Option Chars Range)
+  (or (validate-string Value Option Chars)
+      (validate-range  Value Option Range) ) )
+
 # checks if a string is within the allowed range
 # returns T if in range
 # returns NIL if not in range

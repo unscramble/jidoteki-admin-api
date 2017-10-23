@@ -39,8 +39,7 @@
         (validate-token Token) ]
 
 [de update-token (Token)
-  (or (validate-range Token 'newtoken (1 . 255))
-      (validate-string Token 'newtoken *Ascii_codes_printable)
+  (or (validate-string-range Token 'newtoken *Ascii_codes_printable (1 . 255))
       (prog
         (out (pack *Upload_path "api.token") (prinl Token))
         (sys "SSH_ORIGINAL_COMMAND" "token")

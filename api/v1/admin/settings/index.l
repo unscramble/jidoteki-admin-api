@@ -49,30 +49,16 @@
 
       (or
           # required string character/length validations
-          (validate-string Interface  'interface *Ascii_codes_alphanumeric) # required
-          (validate-range  Interface  'interface (3 . 14))                  # required
-          (validate-string Hostname   'hostname *Ascii_codes_fqdn)          # required
-          (validate-range  Hostname   'hostname *Range_fqdn)                # required
+          (validate-string-range Interface  'interface *Ascii_codes_alphanumeric (3 . 14))
+          (validate-string-range Hostname   'hostname *Ascii_codes_fqdn *Range_fqdn)
 
           # optional
-          (when Ip_address
-            (or   (validate-string Ip_address 'ip_address *Ascii_codes_ipaddress)
-                  (validate-range  Ip_address 'ip_address *Range_ipaddress) ) )
-          (when Netmask
-            (or   (validate-string Netmask    'netmask *Ascii_codes_ipaddress)
-                  (validate-range  Netmask    'netmask *Range_ipaddress) ) )
-          (when Gateway
-            (or   (validate-string Gateway    'gateway *Ascii_codes_ipaddress)
-                  (validate-range  Gateway    'gateway *Range_ipaddress) ) )
-          (when Dns1
-            (or   (validate-string Dns1       'dns1 *Ascii_codes_ipaddress)
-                  (validate-range  Dns1       'dns1 *Range_ipaddress) ) )
-          (when Dns2
-            (or   (validate-string Dns2       'dns2 *Ascii_codes_ipaddress)
-                  (validate-range  Dns2       'dns2 *Range_ipaddress) ) )
-          (when Ntpserver
-            (or   (validate-string Ntpserver 'ntpserver (pack *Ascii_codes_fqdn ":"))
-                  (validate-range  Ntpserver 'ntpserver *Range_fqdn) ) )
+          (when Ip_address  (validate-string-range Ip_address 'ip_address *Ascii_codes_ipaddress *Range_ipaddress))
+          (when Netmask     (validate-string-range Netmask    'netmask *Ascii_codes_ipaddress *Range_ipaddress))
+          (when Gateway     (validate-string-range Gateway    'gateway *Ascii_codes_ipaddress *Range_ipaddress))
+          (when Dns1        (validate-string-range Dns1       'dns1 *Ascii_codes_ipaddress *Range_ipaddress))
+          (when Dns2        (validate-string-range Dns2       'dns2 *Ascii_codes_ipaddress *Range_ipaddress))
+          (when Ntpserver   (validate-string-range Ntpserver  'ntpserver (pack *Ascii_codes_fqdn ":") *Range_fqdn))
 
           (prog
             # output JSON files if validation success
