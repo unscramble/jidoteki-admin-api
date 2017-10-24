@@ -22,12 +22,12 @@
   * [api] Ensure `/health` endpoint is not cached
   * [api] Refactor redundant functions
   * [api] Add regression tests for new features and validations
-  * [api] Removed PicoLisp namespaces/symbols in unit tests
+  * [api] Remove PicoLisp namespaces/symbols in unit tests
   * [dashboard] Update Fontello fonts
   * [dashboard] Standardize the look and feel of each section
   * [dashboard] Add Jidoteki footer to bottom of Dashboard UI
   * [dashboard] Split API documentation into two main sections: `default` and `optional` endpoints
-  * [deps] Updated `picolisp-json` and `picolisp-unit` dependencies
+  * [deps] Update `picolisp-json` and `picolisp-unit` dependencies
 
   ### Potentially breaking changes
 

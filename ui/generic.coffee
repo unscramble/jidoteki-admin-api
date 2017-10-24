@@ -204,6 +204,14 @@ reloadHealth = () ->
       $('#jido-health-bar').append "<li class=\"#{diskdanger}\">disk #{result['disk']['used']} of #{result['disk']['total']} (#{result['disk']['percentage']}%)</li>"
       $('#jido-health-bar').append "<li class=\"#{memdanger}\">memory #{result['memory']['used']} of #{result['memory']['total']} (#{result['memory']['percentage']}%)</li>"
 
+reloadEndpoints = () ->
+  fetchData "/api/v1/admin/endpoints", (err, result) ->
+    unless err
+      # display the menu button if the endpoint is enabled
+      for value in apiEndpoints
+        if "/api/v1/admin/#{value}" in result.endpoints
+          $("#jido-button-#{value}").show()
+
 ### generic content functions ###
 
 loadToken = ->

@@ -27,6 +27,9 @@ loadHome = ->
     unless err
       $('.jido-data-platform-version').html validator.escape(result.version)
 
+  reloadHealth()
+  reloadEndpoints()
+
   fetchData "/api/v1/admin/settings", (err, result) ->
     unless err
       networkSettings = for key, value of result.network
@@ -579,15 +582,6 @@ backupButtonListener = () ->
         $(".jido-page-content-backup .progress").hide()
 
 navbarListener = ->
-  reloadHealth()
-
-  fetchData "/api/v1/admin/endpoints", (err, result) ->
-    unless err
-      # display the menu button if the endpoint is enabled
-      for value in apiEndpoints
-        if "/api/v1/admin/#{value}" in result.endpoints
-          $("#jido-button-#{value}").show()
-
   $('#jido-page-navbar .navbar-nav li a').click ->
     clicked = $(this).parent().attr 'id'
     switch clicked

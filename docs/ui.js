@@ -8,7 +8,7 @@
 
 (function() {
   'use strict';
-  var apiEndpoints, apiServer, apiType, authenticate, backupButtonListener, capitalize, certsButtonListener, clearToken, debugButtonListener, drawGraphs, failedUpload, fetchData, fetchFile, getHmac, getSha256, getStatus, getToken, loadBackup, loadHome, loadLogin, loadMonitor, loadNetwork, loadSetup, loadStorage, loadSupport, loadToken, loadUpdateCerts, loginButtonListener, logoutButtonListener, logsButtonListener, monitorButtonListener, monitorClick, navbarListener, networkButtonListener, newTokenButtonListener, pollStatus, putFile, putToken, redirectUrl, reloadHealth, restartButtonListener, runningUpload, storageButtonListener, storageSelectListener, successUpload, tokenButtonListener, updateButtonListener, updateCertsButtonListener,
+  var apiEndpoints, apiServer, apiType, authenticate, backupButtonListener, capitalize, certsButtonListener, clearToken, debugButtonListener, drawGraphs, failedUpload, fetchData, fetchFile, getHmac, getSha256, getStatus, getToken, loadBackup, loadHome, loadLogin, loadMonitor, loadNetwork, loadSetup, loadStorage, loadSupport, loadToken, loadUpdateCerts, loginButtonListener, logoutButtonListener, logsButtonListener, monitorButtonListener, monitorClick, navbarListener, networkButtonListener, newTokenButtonListener, pollStatus, putFile, putToken, redirectUrl, reloadEndpoints, reloadHealth, restartButtonListener, runningUpload, storageButtonListener, storageSelectListener, successUpload, tokenButtonListener, updateButtonListener, updateCertsButtonListener,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   apiServer = window.location.origin != null ? window.location.origin : window.location.protocol + "//" + window.location.hostname + (window.location.port != null ? ':' + window.location.port : '');
@@ -246,6 +246,24 @@
     });
   };
 
+  reloadEndpoints = function() {
+    return fetchData("/api/v1/admin/endpoints", function(err, result) {
+      var i, len, ref, results, value;
+      if (!err) {
+        results = [];
+        for (i = 0, len = apiEndpoints.length; i < len; i++) {
+          value = apiEndpoints[i];
+          if (ref = "/api/v1/admin/" + value, indexOf.call(result.endpoints, ref) >= 0) {
+            results.push($("#jido-button-" + value).show());
+          } else {
+            results.push(void 0);
+          }
+        }
+        return results;
+      }
+    });
+  };
+
 
   /* generic content functions */
 
@@ -415,6 +433,8 @@
         return $('.jido-data-platform-version').html(validator.escape(result.version));
       }
     });
+    reloadHealth();
+    reloadEndpoints();
     fetchData("/api/v1/admin/settings", function(err, result) {
       var key, networkSettings, value;
       if (!err) {
@@ -1097,22 +1117,6 @@
   };
 
   navbarListener = function() {
-    reloadHealth();
-    fetchData("/api/v1/admin/endpoints", function(err, result) {
-      var i, len, ref, results, value;
-      if (!err) {
-        results = [];
-        for (i = 0, len = apiEndpoints.length; i < len; i++) {
-          value = apiEndpoints[i];
-          if (ref = "/api/v1/admin/" + value, indexOf.call(result.endpoints, ref) >= 0) {
-            results.push($("#jido-button-" + value).show());
-          } else {
-            results.push(void 0);
-          }
-        }
-        return results;
-      }
-    });
     return $('#jido-page-navbar .navbar-nav li a').click(function() {
       var clicked;
       clicked = $(this).parent().attr('id');
