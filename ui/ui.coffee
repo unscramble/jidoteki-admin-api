@@ -307,15 +307,17 @@ networkButtonListener = ->
         $('.network-form .network-gateway-label').focus()
         return
 
-      unless validator.isIP(json.network.dns1)
-        $('.network-form .network-dns1-label').parent().addClass 'has-error'
-        $('.network-form .network-dns1-label').focus()
-        return
+      if json.network.dns1
+        unless validator.isIP(json.network.dns1)
+          $('.network-form .network-dns1-label').parent().addClass 'has-error'
+          $('.network-form .network-dns1-label').focus()
+          return
 
-      unless validator.isIP(json.network.dns2)
-        $('.network-form .network-dns2-label').parent().addClass 'has-error'
-        $('.network-form .network-dns2-label').focus()
-        return
+      if json.network.dns2
+        unless validator.isIP(json.network.dns2)
+          $('.network-form .network-dns2-label').parent().addClass 'has-error'
+          $('.network-form .network-dns2-label').focus()
+          return
 
       $('.jido-data-network-status').html 'STATIC'
       $('.jido-data-network-status').addClass 'label-success'

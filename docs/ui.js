@@ -146,16 +146,21 @@
 
   getStatus = function(msg, callback) {
     return fetchData("/api/v1/" + apiType + "/" + msg, function(err, result) {
-      var label;
+      var label, status;
       if (err) {
         return callback(new Error(err));
       } else {
-        $(".jido-data-" + msg + "-status").html(validator.escape(result.status));
+        if (typeof result.status === 'object') {
+          status = "";
+        } else {
+          status = validator.escape(result.status);
+        }
+        $(".jido-data-" + msg + "-status").html(status);
         if (result.log) {
           $(".jido-data-" + msg + "-log").html(typeof result.log === 'object' ? "No log file found" : validator.escape(result.log).replace(/\\n/g, '<br/>'));
         }
         label = (function() {
-          switch (result.status) {
+          switch (status) {
             case "failed":
               return "label-danger";
             case "success":
@@ -167,14 +172,14 @@
               return "label-default";
           }
         })();
-        if (result.status === 'failed') {
+        if (status === 'failed') {
           $(".jido-page-content-" + msg + " .alert.jido-panel").addClass("alert-danger");
           $(".jido-page-content-" + msg + " .jido-page-content-" + msg + "-panel").attr('style', 'background-color: none');
         } else {
           $(".jido-page-content-" + msg + " .alert.jido-panel").removeClass("alert-danger");
           $(".jido-page-content-" + msg + " .jido-page-content-" + msg + "-panel").attr('style', 'background-color: #EEEEEE');
         }
-        if (result['error-code'] && result['error-message'] && result.status === 'failed') {
+        if (result['error-code'] && result['error-message'] && status === 'failed') {
           $(".jido-data-" + msg + "-status-error").show();
           $(".jido-data-" + msg + "-status-error-message").html((validator.escape(result['error-code'])) + ": " + (validator.escape(result['error-message'])));
         } else {
@@ -798,15 +803,19 @@
           $('.network-form .network-gateway-label').focus();
           return;
         }
-        if (!validator.isIP(json.network.dns1)) {
-          $('.network-form .network-dns1-label').parent().addClass('has-error');
-          $('.network-form .network-dns1-label').focus();
-          return;
+        if (json.network.dns1) {
+          if (!validator.isIP(json.network.dns1)) {
+            $('.network-form .network-dns1-label').parent().addClass('has-error');
+            $('.network-form .network-dns1-label').focus();
+            return;
+          }
         }
-        if (!validator.isIP(json.network.dns2)) {
-          $('.network-form .network-dns2-label').parent().addClass('has-error');
-          $('.network-form .network-dns2-label').focus();
-          return;
+        if (json.network.dns2) {
+          if (!validator.isIP(json.network.dns2)) {
+            $('.network-form .network-dns2-label').parent().addClass('has-error');
+            $('.network-form .network-dns2-label').focus();
+            return;
+          }
         }
         $('.jido-data-network-status').html('STATIC');
         $('.jido-data-network-status').addClass('label-success');

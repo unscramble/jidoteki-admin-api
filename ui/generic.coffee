@@ -128,11 +128,12 @@ getStatus = (msg, callback) ->
     if err
       callback new Error(err)
     else
-      $(".jido-data-#{msg}-status").html validator.escape(result.status)
+      if typeof result.status is 'object' then status = "" else status = validator.escape(result.status)
+      $(".jido-data-#{msg}-status").html status
       if result.log
         $(".jido-data-#{msg}-log").html(if typeof result.log is 'object' then "No log file found" else validator.escape(result.log).replace(/\\n/g,'<br/>'))
 
-      label = switch result.status
+      label = switch status
         when "failed"     then "label-danger"
         when "success"    then "label-success"
         when "running"    then "label-primary"
@@ -140,14 +141,14 @@ getStatus = (msg, callback) ->
           $(".jido-data-#{msg}-status").html "waiting for #{msg}"
           "label-default"
 
-      if result.status == 'failed'
+      if status == 'failed'
         $(".jido-page-content-#{msg} .alert.jido-panel").addClass "alert-danger"
         $(".jido-page-content-#{msg} .jido-page-content-#{msg}-panel").attr 'style', 'background-color: none'
       else
         $(".jido-page-content-#{msg} .alert.jido-panel").removeClass "alert-danger"
         $(".jido-page-content-#{msg} .jido-page-content-#{msg}-panel").attr 'style', 'background-color: #EEEEEE'
 
-      if result['error-code'] and result['error-message'] and result.status == 'failed'
+      if result['error-code'] and result['error-message'] and status == 'failed'
         $(".jido-data-#{msg}-status-error").show()
         $(".jido-data-#{msg}-status-error-message").html "#{validator.escape(result['error-code'])}: #{validator.escape(result['error-message'])}"
       else
