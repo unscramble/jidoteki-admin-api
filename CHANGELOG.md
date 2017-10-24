@@ -54,21 +54,17 @@
     - **dns2**: `abcdef0123456789ABCDEF.:`, between 3 and 45 characters
     - **ntpserver**: `a-zA-Z0-9` (alphanumeric) + `.-:`, between 3 and 255 characters
   * `POST /storage`: `settings` parameter validates each `storage` value:
-    [nfs]
-    - **mount_options (required)**: `a-zA-Z0-9` (alphanumeric) + `.-=,`, between 3 and 255 characters
-    - **ip (required)**: `abcdef0123456789ABCDEF.:`, between 3 and 45 characters
-    - **share (required)**: `a-zA-Z0-9` (alphanumeric) + `.-_/`, between 3 and 255 characters
-    [aoe]
-    - **device (required)**: `a-zA-Z0-9` (alphanumeric) + `.-`, between 3 and 255 characters
-    [iscsi]
-    - **target (required)**: `a-zA-Z0-9` (alphanumeric) + `.-_:`, between 3 and 255 characters
-    - **ip (required)**: `abcdef0123456789ABCDEF.:`, between 3 and 45 characters
-    - **username (required)**: printable ASCII characters (ASCII codes 33-126, no spaces), between 3 and 255 characters
-    - **password (required)**: printable ASCII characters (ASCII codes 33-126, no spaces), between 3 and 255 characters
-    [nbd]
-    - **export_name (required)**: `a-zA-Z0-9` (alphanumeric) + `.-_/`, between 3 and 255 characters
-    - **ip (required)**: `abcdef0123456789ABCDEF.:`, between 3 and 45 characters
-    - **port (required)**: `0-9` (numeric) + `.-_/`, between 1 and 5 characters
+    - [nfs] **mount_options (required)**: `a-zA-Z0-9` (alphanumeric) + `.-=,`, between 3 and 255 characters
+    - [nfs] **ip (required)**: `abcdef0123456789ABCDEF.:`, between 3 and 45 characters
+    - [nfs] **share (required)**: `a-zA-Z0-9` (alphanumeric) + `.-_/`, between 3 and 255 characters
+    - [aoe] **device (required)**: `a-zA-Z0-9` (alphanumeric) + `.-`, between 3 and 255 characters
+    - [iscsi] **target (required)**: `a-zA-Z0-9` (alphanumeric) + `.-_:`, between 3 and 255 characters
+    - [iscsi] **ip (required)**: `abcdef0123456789ABCDEF.:`, between 3 and 45 characters
+    - [iscsi] **username (required)**: printable ASCII characters (ASCII codes 33-126, no spaces), between 3 and 255 characters
+    - [iscsi] **password (required)**: printable ASCII characters (ASCII codes 33-126, no spaces), between 3 and 255 characters
+    - [nbd] **export_name (required)**: `a-zA-Z0-9` (alphanumeric) + `.-_/`, between 3 and 255 characters
+    - [nbd] **ip (required)**: `abcdef0123456789ABCDEF.:`, between 3 and 45 characters
+    - [nbd] **port (required)**: `0-9` (numeric) + `.-_/`, between 1 and 5 characters
 
   **All "optional" endpoints are disabled by default:**
 
