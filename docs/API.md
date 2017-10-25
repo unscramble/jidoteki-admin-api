@@ -1652,4 +1652,4 @@ Content-Type: application/json
 
 ----
 
-**Powered by [Jidoteki.com](#) - [Copyright notices](/docs/NOTICE.TXT) - `v1.18.0`**
+Powered by Jidoteki.com - v1.18.0 - [Copyright notices](/docs/NOTICE.TXT)
