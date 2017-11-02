@@ -1,0 +1,46 @@
+//- This Source Code Form is subject to the terms of the Mozilla Public
+//- License, v. 2.0. If a copy of the MPL was not distributed with this
+//- file, You can obtain one at http://mozilla.org/MPL/2.0/.
+//- 
+//- Copyright (c) 2015-2017 Alexander Williams, Unscramble <license@unscramble.jp>
+
+// #replication container
+
+- sectionName = "replication";
+- sectionTitle = "Replication";
+- sectionExtra = "settings"
+
+mixin sectionMain
+  .panel-body
+    h4 Configure Replication settings for persistent data.
+    br
+    .alert.alert-info
+      | All form fields are required
+    .row
+      form(role='form', class="#{sectionName}-form")
+        fieldset
+          .col-lg-12.col-md-12.col-sm-12
+            .form-group
+              label.control-label.replication-type-label(for='type-input')
+                | Replication type
+              select#replication-name-select.form-control(tabindex='21')
+            div(id="#{sectionName}Forms")
+              //- mixin getNFS()
+              //- mixin getAOE()
+              //- mixin getISCSI()
+              //- mixin getNBD()
+            .form-group
+              br
+              input.btn.btn-lg.btn-primary.btn-block(id="jido-button-#{sectionName}-upload", type='submit', value='Update', onclick='return event.preventDefault();')
+
+mixin sectionInfo
+  .panel-body(id="#{sectionName}Help")
+    //- mixin helpLOCAL()
+    //- mixin helpNFS()
+    //- mixin helpAOE()
+    //- mixin helpISCSI()
+    //- mixin helpNBD()
+
++sectionHeader(sectionName, sectionTitle)
+
+// /#replication container

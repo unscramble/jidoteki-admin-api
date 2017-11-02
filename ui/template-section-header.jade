@@ -1,0 +1,35 @@
+
+mixin sectionHeader(sectionName, sectionTitle)
+  .container-fluid.jido-page-content(style='display:none', id="jido-page-#{sectionName}", class="jido-page-content-#{sectionName}")
+    .row
+      .col-lg-10.col-md-10.col-sm-12.col-lg-offset-1.col-md-offset-1
+        h1.page-header #{sectionTitle}
+    .row
+      .col-lg-10.col-md-10.col-sm-12.col-lg-offset-1.col-md-offset-1
+        .panel.panel-default.jido-panel(style='display:none;')
+          .panel-heading
+            h4 Status: 
+              span.label.label-default(class="jido-data-#{sectionName}-status") ...waiting for #{sectionName}
+            .progress(style='margin-top: 20px')
+              .progress-bar.progress-bar-striped.active(role='progressbar', aria-valuenow='33', aria-valuemin='0', aria-valuemax='100', style='width: 33%')
+                | ...uploading, please wait
+            .alert.alert-dismissible.alert-success(style='display:none;', class="#{sectionName}-alert")
+
+    .row
+      .col-lg-4.col-md-4.col-sm-12.col-lg-offset-1.col-md-offset-1
+        .panel.panel-default.jido-panel
+          .panel-heading
+            h3.panel-title
+              i.fa.icon-server
+              |  #{sectionTitle} #{sectionExtra}
+
+          +sectionMain
+
+      .col-lg-6.col-md-6.col-sm-12
+        .panel.panel-default.jido-panel
+          .panel-heading
+            h3.panel-title
+              i.fa.icon-info-circled
+              |  Information
+
+          +sectionInfo

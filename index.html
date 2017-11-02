@@ -301,9 +301,7 @@
             <div class="panel-body">
               <h4>Upload TLS certificates to replace the default self-signed certificates.</h4>
               <blockquote><span class="text-muted">Example</span><br><em>enterprise.pem, enterprise.key, enterprise-cacert.pem</em></blockquote>
-              <div style="display:none;" class="alert alert-dismissible alert-info certs-alert">
-                <button type="button" data-dismiss="alert" class="close">×</button>The status and log will update automatically.
-              </div>
+              <div style="display:none;" class="alert alert-dismissible alert-info certs-alert">The status and log will update automatically.</div>
               <form role="form" class="certs-form">
                 <fieldset>
                   <div class="form-group">
@@ -338,140 +336,141 @@
     </div>
     <!-- /#certs container-->
     <!-- #storage container-->
-    <div id="jido-page-storage" style="display:none" class="container-fluid jido-page-content jido-page-content-storage">
-      <div class="row">
-        <div class="col-lg-10 col-md-10 col-sm-12 col-lg-offset-1 col-md-offset-1">
-          <h1 class="page-header">Storage</h1>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-lg-10 col-md-10 col-sm-12 col-lg-offset-1 col-md-offset-1">
-          <div style="display:none;" class="panel panel-default jido-panel">
-            <div class="panel-heading">
-              <div style="margin-top: 20px" class="progress">
-                <div role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" style="width: 33%" class="progress-bar progress-bar-striped active">...uploading, please wait</div>
-              </div>
-              <div style="display:none;" class="alert alert-dismissible alert-success storage-alert"></div>
+        <div style="display:none" id="jido-page-storage" class="container-fluid jido-page-content jido-page-content-storage">
+          <div class="row">
+            <div class="col-lg-10 col-md-10 col-sm-12 col-lg-offset-1 col-md-offset-1">
+              <h1 class="page-header">Storage</h1>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-lg-4 col-md-4 col-sm-12 col-lg-offset-1 col-md-offset-1">
-          <div class="panel panel-default jido-panel">
-            <div class="panel-heading">
-              <h3 class="panel-title"><i class="fa icon-database"></i> Storage settings</h3>
+          <div class="row">
+            <div class="col-lg-10 col-md-10 col-sm-12 col-lg-offset-1 col-md-offset-1">
+              <div style="display:none;" class="panel panel-default jido-panel">
+                <div class="panel-heading">
+                  <h4>Status: <span class="label label-default jido-data-storage-status">...waiting for storage</span></h4>
+                  <div style="margin-top: 20px" class="progress">
+                    <div role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" style="width: 33%" class="progress-bar progress-bar-striped active">...uploading, please wait</div>
+                  </div>
+                  <div style="display:none;" class="alert alert-dismissible alert-success storage-alert"></div>
+                </div>
+              </div>
             </div>
-            <div class="panel-body">
-              <h4>Select Storage type and configure Settings for persistent data.</h4><br>
-              <div class="alert alert-info">All form fields are required</div>
-              <div class="row">
-                <form role="form" class="storage-form">
-                  <fieldset>
-                    <div class="col-lg-12 col-md-12 col-sm-12">
-                      <div class="form-group">
-                        <label for="type-input" class="control-label storage-type-label">Storage type</label>
-                        <select id="storage-name-select" tabindex="21" class="form-control"></select>
-                      </div>
-                      <div id="storageForms">
-                            <div id="storage-nfs" style="display:none;" class="storage-form-options">
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-12 col-lg-offset-1 col-md-offset-1">
+              <div class="panel panel-default jido-panel">
+                <div class="panel-heading">
+                  <h3 class="panel-title"><i class="fa icon-server"></i> Storage settings</h3>
+                </div>
+                    <div class="panel-body">
+                      <h4>Select Storage type and configure Settings for persistent data.</h4><br>
+                      <div class="alert alert-info">All form fields are required</div>
+                      <div class="row">
+                        <form role="form" class="storage-form">
+                          <fieldset>
+                            <div class="col-lg-12 col-md-12 col-sm-12">
                               <div class="form-group">
-                                <label for="ip-input" class="control-label storage-ip-label">NFS Server IP (ex: 192.168.1.100)</label>
-                                <input placeholder="External NFS Server IP" name="ip" type="text" class="ip-input form-control">
+                                <label for="type-input" class="control-label storage-type-label">Storage type</label>
+                                <select id="storage-name-select" tabindex="21" class="form-control"></select>
                               </div>
-                              <div class="form-group">
-                                <label for="share-input" class="control-label storage-share-label">NFS Server Path (ex: /nfs/storage)</label>
-                                <input placeholder="External NFS Server Path" name="share" type="text" class="share-input form-control">
+                              <div id="storageForms">
+                                    <div id="storage-nfs" style="display:none;" class="storage-form-options">
+                                      <div class="form-group">
+                                        <label for="ip-input" class="control-label storage-ip-label">NFS Server IP (ex: 192.168.1.100)</label>
+                                        <input placeholder="External NFS Server IP" name="ip" type="text" class="ip-input form-control">
+                                      </div>
+                                      <div class="form-group">
+                                        <label for="share-input" class="control-label storage-share-label">NFS Server Path (ex: /nfs/storage)</label>
+                                        <input placeholder="External NFS Server Path" name="share" type="text" class="share-input form-control">
+                                      </div>
+                                      <div class="form-group">
+                                        <label for="mount-input" class="control-label storage-mount-label">Mount options (ex: noacl,sync)</label>
+                                        <input placeholder="Mount options" name="mount_options" type="text" class="mount-input form-control">
+                                      </div>
+                                    </div>
+                                    <div id="storage-aoe" style="display:none;" class="storage-form-options">
+                                      <div class="form-group">
+                                        <label for="device-input" class="control-label storage-device-label">Device (ex: e0.1)</label>
+                                        <input placeholder="Device name" name="device" type="text" class="device-input form-control">
+                                      </div>
+                                    </div>
+                                    <div id="storage-iscsi" style="display:none;" class="storage-form-options">
+                                      <div class="form-group">
+                                        <label for="ip-input" class="control-label storage-ip-label">IP address (ex: 192.168.1.100)</label>
+                                        <input placeholder="IP address" name="ip" type="text" class="ip-input form-control">
+                                      </div>
+                                      <div class="form-group">
+                                        <label for="target-input" class="control-label storage-target-label">Target (ex: iqn.2016-01.com.example:storage.lun1)</label>
+                                        <input placeholder="Target" name="target" type="text" class="target-input form-control">
+                                      </div>
+                                      <div class="form-group">
+                                        <label for="username-input" class="control-label storage-username-label">Username (ex: nfsuser)</label>
+                                        <input placeholder="Username" name="username" type="text" class="username-input form-control">
+                                      </div>
+                                      <div class="form-group">
+                                        <label for="password-input" class="control-label storage-password-label">Password (ex: nfspassword)</label>
+                                        <input placeholder="Password" name="password" type="password" class="password-input form-control">
+                                      </div>
+                                    </div>
+                                    <div id="storage-nbd" style="display:none;" class="storage-form-options">
+                                      <div class="form-group">
+                                        <label for="ip-input" class="control-label storage-ip-label">IP address (ex: 192.168.1.100)</label>
+                                        <input placeholder="IP address" name="ip" type="text" class="ip-input form-control">
+                                      </div>
+                                      <div class="form-group">
+                                        <label for="port-input" class="control-label storage-port-label">Port (ex: 1043)</label>
+                                        <input placeholder="Port" name="port" type="text" class="port-input form-control">
+                                      </div>
+                                      <div class="form-group">
+                                        <label for="export-input" class="control-label storage-export-label">Export name (ex: otherexport)</label>
+                                        <input placeholder="Export name" name="export_name" type="text" class="export-input form-control">
+                                      </div>
+                                    </div>
                               </div>
-                              <div class="form-group">
-                                <label for="mount-input" class="control-label storage-mount-label">Mount options (ex: noacl,sync)</label>
-                                <input placeholder="Mount options" name="mount_options" type="text" class="mount-input form-control">
+                              <div class="form-group"><br>
+                                <input id="jido-button-storage-upload" type="submit" value="Update" onclick="return event.preventDefault();" class="btn btn-lg btn-primary btn-block">
                               </div>
                             </div>
-                            <div id="storage-aoe" style="display:none;" class="storage-form-options">
-                              <div class="form-group">
-                                <label for="device-input" class="control-label storage-device-label">Device (ex: e0.1)</label>
-                                <input placeholder="Device name" name="device" type="text" class="device-input form-control">
-                              </div>
-                            </div>
-                            <div id="storage-iscsi" style="display:none;" class="storage-form-options">
-                              <div class="form-group">
-                                <label for="ip-input" class="control-label storage-ip-label">IP address (ex: 192.168.1.100)</label>
-                                <input placeholder="IP address" name="ip" type="text" class="ip-input form-control">
-                              </div>
-                              <div class="form-group">
-                                <label for="target-input" class="control-label storage-target-label">Target (ex: iqn.2016-01.com.example:storage.lun1)</label>
-                                <input placeholder="Target" name="target" type="text" class="target-input form-control">
-                              </div>
-                              <div class="form-group">
-                                <label for="username-input" class="control-label storage-username-label">Username (ex: nfsuser)</label>
-                                <input placeholder="Username" name="username" type="text" class="username-input form-control">
-                              </div>
-                              <div class="form-group">
-                                <label for="password-input" class="control-label storage-password-label">Password (ex: nfspassword)</label>
-                                <input placeholder="Password" name="password" type="password" class="password-input form-control">
-                              </div>
-                            </div>
-                            <div id="storage-nbd" style="display:none;" class="storage-form-options">
-                              <div class="form-group">
-                                <label for="ip-input" class="control-label storage-ip-label">IP address (ex: 192.168.1.100)</label>
-                                <input placeholder="IP address" name="ip" type="text" class="ip-input form-control">
-                              </div>
-                              <div class="form-group">
-                                <label for="port-input" class="control-label storage-port-label">Port (ex: 1043)</label>
-                                <input placeholder="Port" name="port" type="text" class="port-input form-control">
-                              </div>
-                              <div class="form-group">
-                                <label for="export-input" class="control-label storage-export-label">Export name (ex: otherexport)</label>
-                                <input placeholder="Export name" name="export_name" type="text" class="export-input form-control">
-                              </div>
-                            </div>
-                      </div>
-                      <div class="form-group"><br>
-                        <input id="jido-button-storage-upload" type="submit" value="Update" onclick="return event.preventDefault();" class="btn btn-lg btn-primary btn-block">
+                          </fieldset>
+                        </form>
                       </div>
                     </div>
-                  </fieldset>
-                </form>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <div class="panel panel-default jido-panel">
+                <div class="panel-heading">
+                  <h3 class="panel-title"><i class="fa icon-info-circled"></i> Information</h3>
+                </div>
+                    <div id="storageHelp" class="panel-body">
+                          <div id="storage-help-local" style="display:none;">
+                            <h4>Local (disk)</h4>
+                            <p>This is the default setting.</p>
+                            <p>Data is stored locally on the 2nd disk, in an LVM partition mounted to <code> /data</code>.</p>
+                          </div>
+                          <div id="storage-help-nfs" style="display:none;">
+                            <h4>NFS</h4>
+                            <p>Network File System (NFS) storage provides a multitude of configuration options.</p>
+                            <p>NFS <code>Mount options</code> are fully listed and described in the <a href="https://linux.die.net/man/5/nfs">nfs(5)</a> man page (external link).</p>
+                          </div>
+                          <div id="storage-help-aoe" style="display:none;">
+                            <h4>AoE (ATA-over-Ethernet)</h4>
+                            <p>AoE storage provides block storage over ethernet.</p>
+                            <p>The AoE<code>Device</code> is a block device defined by the target server, as described in the <a href="https://linux.die.net/man/8/aoe-stat">aoe-stat(8)</a> man page (external link).</p>
+                          </div>
+                          <div id="storage-help-iscsi" style="display:none;">
+                            <h4>iSCSI</h4>
+                            <p>iSCSI storage provides a SCSI interface over TCP.</p>
+                            <p>The iSCSI<code>Target</code> is described in the <a href="https://linux.die.net/man/8/iscsiadm">iscsiadm(8)</a> man page (external link).</p>
+                          </div>
+                          <div id="storage-help-nbd" style="display:none;">
+                            <h4>NBD</h4>
+                            <p>NBD provides a network block device by connecting to an NBD server over TCP.</p>
+                          </div>
+                    </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="col-lg-6 col-md-6 col-sm-12">
-          <div class="panel panel-default jido-panel">
-            <div class="panel-heading">
-              <h3 class="panel-title"><i class="fa icon-info-circled"></i> Information</h3>
-            </div>
-            <div id="storageHelp" class="panel-body">
-                  <div id="storage-help-local" style="display:none;">
-                    <h4>Local (disk)</h4>
-                    <p>This is the default setting.</p>
-                    <p>Data is stored locally on the 2nd disk, in an LVM partition mounted to <code> /data</code>.</p>
-                  </div>
-                  <div id="storage-help-nfs" style="display:none;">
-                    <h4>NFS</h4>
-                    <p>Network File System (NFS) storage provides a multitude of configuration options.</p>
-                    <p>NFS <code>Mount options</code> are fully listed and described in the <a href="https://linux.die.net/man/5/nfs">nfs(5)</a> man page (external link).</p>
-                  </div>
-                  <div id="storage-help-aoe" style="display:none;">
-                    <h4>AoE (ATA-over-Ethernet)</h4>
-                    <p>AoE storage provides block storage over ethernet.</p>
-                    <p>The AoE<code>Device</code> is a block device defined by the target server, as described in the <a href="https://linux.die.net/man/8/aoe-stat">aoe-stat(8)</a> man page (external link).</p>
-                  </div>
-                  <div id="storage-help-iscsi" style="display:none;">
-                    <h4>iSCSI</h4>
-                    <p>iSCSI storage provides a SCSI interface over TCP.</p>
-                    <p>The iSCSI<code>Target</code> is described in the <a href="https://linux.die.net/man/8/iscsiadm">iscsiadm(8)</a> man page (external link).</p>
-                  </div>
-                  <div id="storage-help-nbd" style="display:none;">
-                    <h4>NBD</h4>
-                    <p>NBD provides a network block device by connecting to an NBD server over TCP.</p>
-                  </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     <!-- /#storage container-->
     <!-- #token container-->
     <div id="jido-page-token" style="display:none" class="container-fluid jido-page-content jido-page-content-token">
@@ -611,76 +610,137 @@
     </div>
     <!-- /#monitor container-->
     <!-- #backup container-->
-    <div id="jido-page-backup" style="display:none" class="container-fluid jido-page-content jido-page-content-backup">
-      <div class="row">
-        <div class="col-lg-10 col-md-10 col-sm-12 col-lg-offset-1 col-md-offset-1">
-          <h1 class="page-header">Backup/Restore</h1>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-lg-10 col-md-10 col-sm-12 col-lg-offset-1 col-md-offset-1">
-          <div style="display:none;" class="panel panel-default jido-panel">
-            <div class="panel-heading">
-              <h4>Status: <span class="label label-default jido-data-backup-status">...waiting for backup</span></h4>
-              <div style="display:none; margin-top: 20px" class="progress">
-                <div role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" style="width: 33%" class="progress-bar progress-bar-striped active">...uploading, please wait</div>
+        <div style="display:none" id="jido-page-backup" class="container-fluid jido-page-content jido-page-content-backup">
+          <div class="row">
+            <div class="col-lg-10 col-md-10 col-sm-12 col-lg-offset-1 col-md-offset-1">
+              <h1 class="page-header">Backup/Restore</h1>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-10 col-md-10 col-sm-12 col-lg-offset-1 col-md-offset-1">
+              <div style="display:none;" class="panel panel-default jido-panel">
+                <div class="panel-heading">
+                  <h4>Status: <span class="label label-default jido-data-backup-status">...waiting for backup</span></h4>
+                  <div style="margin-top: 20px" class="progress">
+                    <div role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" style="width: 33%" class="progress-bar progress-bar-striped active">...uploading, please wait</div>
+                  </div>
+                  <div style="display:none;" class="alert alert-dismissible alert-success backup-alert"></div>
+                </div>
               </div>
-              <div style="display:none;" class="alert alert-dismissible alert-success backup-alert"></div>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-lg-4 col-md-4 col-sm-12 col-lg-offset-1 col-md-offset-1">
-          <div class="panel panel-default jido-panel">
-            <div class="panel-heading">
-              <h3 class="panel-title"><i class="fa icon-floppy"></i> Backup action</h3>
-            </div>
-            <div class="panel-body">
-              <h4>Create, cancel, download, or restore a Backup archive.</h4><br>
-              <form role="form" class="backup-form">
-                <fieldset>
-                  <div class="form-group">
-                    <div class="row">
-                      <div class="col-lg-6 col-md-6 col-sm-12"><a id="jido-button-backup-start" href="#" onclick="return event.preventDefault();" class="btn btn-lg btn-primary btn-block">Start backup</a></div>
-                      <div class="col-lg-6 col-md-6 col-sm-12"><a id="jido-button-backup-stop" href="#" onclick="return event.preventDefault();" style="display:none;" class="btn btn-lg btn-danger btn-block">Cancel backup</a></div>
+          <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-12 col-lg-offset-1 col-md-offset-1">
+              <div class="panel panel-default jido-panel">
+                <div class="panel-heading">
+                  <h3 class="panel-title"><i class="fa icon-server"></i> Backup/Restore action</h3>
+                </div>
+                    <div class="panel-body">
+                      <h4>Create, cancel, download, or restore a Backup archive.</h4><br>
+                      <form role="form" class="backup-form">
+                        <fieldset>
+                          <div class="form-group">
+                            <div class="row">
+                              <div class="col-lg-6 col-md-6 col-sm-12"><a id="jido-button-backup-start" href="#" onclick="return event.preventDefault();" class="btn btn-lg btn-primary btn-block">Start backup</a></div>
+                              <div class="col-lg-6 col-md-6 col-sm-12"><a id="jido-button-backup-stop" href="#" onclick="return event.preventDefault();" style="display:none;" class="btn btn-lg btn-danger btn-block">Cancel backup</a></div>
+                            </div>
+                          </div>
+                          <hr>
+                          <div class="form-group">
+                            <div class="alert alert-info">Restore will overwrite files in <code>/data</code></div>
+                            <label for="backup-restore-file" class="control-label">Restore a backup</label>
+                            <input id="backup-restore-input" placeholder="backup.tar" name="backup_file" type="file" class="form-control">
+                          </div>
+                          <input id="jido-button-backup-upload" type="submit" value="Restore backup" onclick="return event.preventDefault();" class="btn btn-lg btn-primary btn-block">
+                        </fieldset>
+                      </form>
                     </div>
-                  </div>
-                  <hr>
-                  <div class="form-group">
-                    <div class="alert alert-info">Restore will overwrite files in <code>/data</code></div>
-                    <label for="backup-restore-file" class="control-label">Restore a backup</label>
-                    <input id="backup-restore-input" placeholder="backup.tar" name="backup_file" type="file" class="form-control">
-                  </div>
-                  <input id="jido-button-backup-upload" type="submit" value="Restore backup" onclick="return event.preventDefault();" class="btn btn-lg btn-primary btn-block">
-                </fieldset>
-              </form>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <div class="panel panel-default jido-panel">
+                <div class="panel-heading">
+                  <h3 class="panel-title"><i class="fa icon-info-circled"></i> Information</h3>
+                </div>
+                    <div id="backupInfo" style="display:none;" class="panel-body">
+                      <h4>Download</h4>
+                      <div class="list-group"><a id="jido-data-backup-file" href="#" class="list-group-item">
+                          <h4 class="list-group-item-heading"><i class="fa icon-file-archive"></i> Backup files (backup.tar)</h4></a></div>
+                      <h4>Filesize</h4>
+                      <p>
+                        <pre class="backup-status-filesize"></pre>
+                      </p>
+                      <h4>SHA256 hash</h4>
+                      <p>
+                        <pre class="backup-status-sha256"></pre>
+                      </p>
+                    </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="col-lg-6 col-md-6 col-sm-12">
-          <div class="panel panel-default jido-panel">
-            <div class="panel-heading">
-              <h3 class="panel-title"><i class="fa icon-info-circled"></i> Information</h3>
-            </div>
-            <div id="backupInfo" style="display:none;" class="panel-body">
-              <h4>Download</h4>
-              <div class="list-group"><a id="jido-data-backup-file" href="#" class="list-group-item">
-                  <h4 class="list-group-item-heading"><i class="fa icon-file-archive"></i> Backup files (backup.tar)</h4></a></div>
-              <h4>Filesize</h4>
-              <p>
-                <pre class="backup-status-filesize"></pre>
-              </p>
-              <h4>SHA256 hash</h4>
-              <p>
-                <pre class="backup-status-sha256"></pre>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     <!-- /#backup container-->
+    <!-- #replication container-->
+        <div style="display:none" id="jido-page-replication" class="container-fluid jido-page-content jido-page-content-replication">
+          <div class="row">
+            <div class="col-lg-10 col-md-10 col-sm-12 col-lg-offset-1 col-md-offset-1">
+              <h1 class="page-header">Replication</h1>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-10 col-md-10 col-sm-12 col-lg-offset-1 col-md-offset-1">
+              <div style="display:none;" class="panel panel-default jido-panel">
+                <div class="panel-heading">
+                  <h4>Status: <span class="label label-default jido-data-replication-status">...waiting for replication</span></h4>
+                  <div style="margin-top: 20px" class="progress">
+                    <div role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" style="width: 33%" class="progress-bar progress-bar-striped active">...uploading, please wait</div>
+                  </div>
+                  <div style="display:none;" class="alert alert-dismissible alert-success replication-alert"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-12 col-lg-offset-1 col-md-offset-1">
+              <div class="panel panel-default jido-panel">
+                <div class="panel-heading">
+                  <h3 class="panel-title"><i class="fa icon-server"></i> Replication settings</h3>
+                </div>
+                    <div class="panel-body">
+                      <h4>Configure Replication settings for persistent data.</h4><br>
+                      <div class="alert alert-info">All form fields are required</div>
+                      <div class="row">
+                        <form role="form" class="replication-form">
+                          <fieldset>
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                              <div class="form-group">
+                                <label for="type-input" class="control-label replication-type-label">Replication type</label>
+                                <select id="replication-name-select" tabindex="21" class="form-control"></select>
+                              </div>
+                              <div id="replicationForms">
+                              </div>
+                              <div class="form-group"><br>
+                                <input id="jido-button-replication-upload" type="submit" value="Update" onclick="return event.preventDefault();" class="btn btn-lg btn-primary btn-block">
+                              </div>
+                            </div>
+                          </fieldset>
+                        </form>
+                      </div>
+                    </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <div class="panel panel-default jido-panel">
+                <div class="panel-heading">
+                  <h3 class="panel-title"><i class="fa icon-info-circled"></i> Information</h3>
+                </div>
+                    <div id="replicationHelp" class="panel-body">
+                    </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    <!-- /#replication container-->
     <div id="jido-modal-certs-pem" class="modal">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -765,7 +825,7 @@ GEs=
     <script src="docs/jsrrdgraph/strftime.js"></script>
     <script src="docs/jsrrdgraph/draw.js"></script>
     <script src="docs/ui.min.js"></script>
-    <div style="margin-bottom:0;margin-top:3em;position:relative;bottom:0px;width:100%;" class="well text-right text-muted jido-smalltext">Powered by Jidoteki.com - v1.18.1 - <a href="/docs/NOTICE.TXT">Copyright notices</a></div>
+    <div style="margin-bottom:0;margin-top:3em;position:relative;bottom:0px;width:100%;" class="well text-right text-muted jido-smalltext">Powered by Jidoteki.com - v1.19.0 - <a href="/docs/NOTICE.TXT">Copyright notices</a></div>
     <!-- This Source Code Form is subject to the terms of the Mozilla Public-->
     <!-- License, v. 2.0. If a copy of the MPL was not distributed with this-->
     <!-- file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
