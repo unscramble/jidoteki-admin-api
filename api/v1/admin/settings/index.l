@@ -22,7 +22,7 @@
     (prin "dns=\"") (when Dns1 (prin @)) (when Dns2 (prin " " @)) (prinl "\"")
     (prin "hostname=\"") (when Hostname (prin @)) (prinl "\"")
     (prin "ntpserver=\"") (when Ntpserver (prin @)) (prinl "\"") )
-  (response-async "settings" "static") )
+  (response-json-async "settings" "static") )
 
 (de settings-dhcp (Interface Hostname)
   (out (pack *Upload_path "network.conf")
@@ -32,7 +32,7 @@
         (prinl "interface=eth0") )
     (prin "hostname=\"") (when Hostname (prin @)) (prinl "\"")
     (prin "ntpserver=\"") (when Ntpserver (prin @)) (prinl "\"") )
-  (response-async "settings" "dhcp") )
+  (response-json-async "settings" "dhcp") )
 
 [de settings-store (Settings)
   (let (App     (cdr (assoc "app" Settings))
@@ -82,7 +82,3 @@
   (response-json (encode (settings-fetch))) )
 
 (check-auth)
-
-(if *Post
-    (api-request-post)
-    (api-request-get) ]

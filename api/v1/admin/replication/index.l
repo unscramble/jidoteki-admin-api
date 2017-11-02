@@ -23,7 +23,7 @@
             (prinl (pack (car N) "=\"" (cdr N) "\"")))
             (cdr (assoc "replication" Settings)) ) )
 
-  (response-async "replication") ]
+  (response-json-async "replication") ]
 
 [de api-request-file (File)
   (if (decode File T)
@@ -34,7 +34,3 @@
   (http-file 'settings) ]
 
 (check-auth)
-
-(if *Post
-    (api-request-post)
-    (api-request-get) ]

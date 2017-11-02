@@ -6,6 +6,7 @@
 
   ### Minor fixes
 
+  * [api] Refactor generic API functions
   * [dashboard] Ensure `Backup/Restore` section displays the alert and status panel when needed
   * [dashboard] Set `autocomplete=off` on login/token page, instead of `autocomplete=false`
 

@@ -65,7 +65,7 @@
 [de response-json-nocache (Json Code Flg)
   (response-json-generic Json Code Flg '(("Content-Type" . "application/json") ("Cache-Control" . "no-cache") ]
 
-(de response-async (Endpoint Action)
+(de response-json-async (Endpoint Action)
   (let Location
     (cons "Location" (pack "/api/v1/admin/" Endpoint))
 
@@ -77,6 +77,10 @@
       (json-string [encode (list (cons "Status" (pack 202 " " (http-code 202))) Location])
       (response-generic 202 Size Date Body (list Location '("Content-Type" . "application/json")))
       (audit-log "web" "admin" (pack Endpoint ".post") Action) ]
+
+### maintain response-async for backwards compatibility
+(de response-async (Endpoint Action)
+  (response-json-async Endpoint Action) )
 
 [de response-generic (Code Size Date Body Headers)
   (prinl "HTTP/1.1 " Code " " (http-code Code) "^M")

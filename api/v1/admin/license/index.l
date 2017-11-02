@@ -23,8 +23,3 @@
   (http-file 'license) ]
 
 (check-auth)
-
-(if *Post
-    (api-request-post)
-    (api-request-get) ]
-

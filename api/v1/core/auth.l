@@ -65,6 +65,6 @@
 
 [de check-auth (Method)
  (check-auth-request Method)
- (case Method
+ (case (get-http-method)
    ("GET"  (api-request-get))
    ("POST" (api-request-post)) ]
