@@ -1026,7 +1026,7 @@
       formData.append('settings', blob, 'settings.json');
       if (formData) {
         return putFile('storage', '/api/v1/admin/storage', formData, function(err, result) {
-          $('.jido-panel').show();
+          $('.jido-page-content-storage .jido-panel').show();
           if (!err) {
             successUpload('storage');
             $(".storage-alert").html("Please Restart to apply storage settings.");
@@ -1054,7 +1054,7 @@
       if (formData) {
         return putFile('backup', '/api/v1/admin/backup', formData, function(err, result) {
           $(".backup-alert").html("The backup will complete shortly.");
-          $('.jido-panel').show();
+          $('.jido-page-content-backup .jido-panel').show();
           if (err) {
             $('.jido-data-backup-status').html('failed');
             $('.jido-data-backup-status').removeClass('label-danger');
@@ -1077,7 +1077,7 @@
       formData.append('action', "STOP");
       if (formData) {
         return putFile('backup', '/api/v1/admin/backup', formData, function(err, result) {
-          $('.jido-panel').show();
+          $('.jido-page-content-backup .jido-panel').show();
           if (err) {
             $('.jido-data-backup-status').html('failed');
             $('.jido-data-backup-status').removeClass('label-danger');
@@ -1109,7 +1109,7 @@
       formData.append('archive', $('#backup-restore-input[type=file]')[0].files[0]);
       if (formData) {
         return putFile('backup', "/api/v1/admin/backup/restore", formData, function(err, result) {
-          $('.jido-panel').show();
+          $('.jido-page-content-backup .jido-panel').show();
           if (err) {
             $('.jido-data-backup-status').html('failed');
             $('.jido-data-backup-status').removeClass('label-danger');

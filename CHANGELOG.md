@@ -2,6 +2,12 @@
 
 ## 1.19.0 (TBD)
 
+## 1.18.2 (2017-11-02)
+
+  ### Regression fixes
+
+  * [dashboard] Alert and status panel displays per section, not globally
+
 ## 1.18.1 (2017-11-01)
 
   ### Minor fixes
