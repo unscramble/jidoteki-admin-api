@@ -13,6 +13,16 @@
 
 (mime "md" "text/markdown; charset=UTF-8" 60)
 
+# HACK: monkey-patch HTTP headers (received) with additional headers
+# see picoLisp/lib/http.l (Line 247)
+(patch _htHead
+  '(case (lowc (till " ^M^J" T)) @S)
+  (fill '(case (lowc (till " ^M^J" T))
+            ("auth-hash:"   (setq *AUTH_HASH    (pack (cdr (line)))))
+            ("auth-cookie:" (setq *AUTH_COOKIE  (pack (cdr (line)))))
+            ("auth-token:"  (setq *AUTH_TOKEN   (pack (cdr (line)))))
+            . @S) ) )
+
 [de https-start ()
   (when (sys "JIDO_WITH_SSL")
     (if (sys "JIDO_STUNNEL_BIN")

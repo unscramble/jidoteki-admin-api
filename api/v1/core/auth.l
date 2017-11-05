@@ -31,12 +31,22 @@
     (when (and Token (num? (car (info Path))))
       (= Token (in Path (line T) ]
 
+[de validate-cookie (Cookie)
+  (let (Path      (pack *Admin_path "etc/api.token")
+        Token     (when (num? (car (info Path))) (in Path (line T)))
+        Tokenhash (when Token (get-sha256 Token)) )
+
+    (when Cookie (= Tokenhash Cookie)) ]
+
 [de validate-auth ()
-  (let (Hash  (get 'hash 'http)
-        Token (get 'token 'http) )
-    (if Hash
-        (validate-hash Hash)
-        (validate-token Token) ]
+  (let (Hash    (or (get 'hash 'http) *AUTH_HASH)
+        Cookie  (or (cdr (assoc "jidoteki-admin-api-token" *Cookies)) *AUTH_COOKIE)
+        Token   (or (get 'token 'http) *AUTH_TOKEN) )
+
+    (cond
+      (Hash   (validate-hash Hash))
+      (Cookie (validate-cookie Cookie))
+      (Token  (validate-token Token)) ]
 
 [de update-token (Token)
   (or (validate-string-range Token 'newtoken *Ascii_codes_printable (1 . 255))
