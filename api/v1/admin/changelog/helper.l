@@ -4,9 +4,5 @@
 #
 # Copyright (c) 2015-2017 Alexander Williams, Unscramble <license@unscramble.jp>
 
-[de api-request-get ()
-  (if (version-number)
-      (response-json (encode (list (cons "version" @))))
-      (http-msg 404) ]
-
-(check-auth "GET")
+[de changelog-html ()
+  (str-escape (in (pack *Admin_path "etc/changelog.txt") (till NIL T) ]

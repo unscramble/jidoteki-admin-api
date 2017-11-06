@@ -82,6 +82,9 @@
 (de response-async (Endpoint Action)
   (response-json-async Endpoint Action) )
 
+[de response-html (Html Code Flg)
+  (response-json-generic Html Code Flg '(("Content-Type" . "text/html") ]
+
 [de response-generic (Code Size Date Body Headers)
   (prinl "HTTP/1.1 " Code " " (http-code Code) "^M")
   (prinl "Server: PicoLisp^M")
@@ -152,3 +155,11 @@
 # returns NIL if not in range
 (de in-range? (Value Min Max)
   (and Value (>= (length Value) Min) (<= (length Value) Max)) )
+
+# escapes strings with html encoded characters
+[de str-escape (String)
+   (pack (mapcar '((N)
+                  (if (or (>= "9" N "0") (>= "Z" (uppc N) "A"))
+                      N
+                      (list "&#x" (hex (char N)) ";") ) )
+                  (chop String) ]
