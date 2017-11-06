@@ -50,7 +50,11 @@ fetchData = (endpoint, callback) ->
   if sha256?
     hmac = getHmac "GET#{endpoint}", sha256
 
-    $.get "#{apiServer}#{endpoint}?hash=#{hmac}"
+    $.ajaxSetup
+      headers:
+        'Auth-Hash': hmac
+
+    $.get "#{apiServer}#{endpoint}"
 
     .done (response) ->
       callback null, response
@@ -83,9 +87,11 @@ putFile = (msg, endpoint, file, callback) ->
     $(".jido-page-content-#{msg} .progress").show()
 
     $.ajax
-      url : "#{apiServer}#{endpoint}?hash=#{hmac}"
+      url : "#{apiServer}#{endpoint}"
       type: "POST"
       data : file
+      headers:
+        'Auth-Hash': hmac
       processData: false
       contentType: false
       success: (response, status, jqXHR) ->

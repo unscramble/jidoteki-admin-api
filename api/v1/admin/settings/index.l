@@ -4,12 +4,6 @@
 #
 # Copyright (c) 2015-2017 Alexander Williams, Unscramble <license@unscramble.jp>
 
-[de settings-fetch ()
-  (let (App     (decode (pack *Admin_path "etc/app.json") T)
-        Network (decode (pack *Admin_path "etc/network.json") T) )
-
-    (list (append '("network") Network) (append '("app") App)) ]
-
 (de settings-static (Interface Ip_address Netmask Gateway Dns1 Dns2 Hostname Ntpserver)
   (out (pack *Upload_path "network.conf")
     (prinl "mode=static")
