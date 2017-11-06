@@ -4,10 +4,6 @@
 #
 # Copyright (c) 2015-2017 Alexander Williams, Unscramble <license@unscramble.jp>
 
-[de services-process ()
-  (sys "SSH_ORIGINAL_COMMAND" "services")
-  (in (list (pack *Admin_path "bin/wrapper.sh")) (pack (till) ]
-
 (de api-request-get ()
   (if (services-process)
       (response-json @)

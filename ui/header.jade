@@ -4,6 +4,8 @@
 //- 
 //- Copyright (c) 2015-2016 Alexander Williams, Unscramble <license@unscramble.jp>
 
+- appVersion = '1.19.0'
+
 head
   meta(charset='utf-8')
   meta(http-equiv='X-UA-Compatible', content='IE=edge')
@@ -14,10 +16,10 @@ head
   title Admin Dashboard
 
   // Bootstrap Core CSS
-  link(href='docs/themes/bootstrap.min.css', rel='stylesheet')
+  link(href="/docs/themes/bootstrap.min.css?v=#{appVersion}", rel='stylesheet')
 
   // Fontello / Font Awesome CSS
-  link(href='docs/font-awesome/css/fontello.min.css', rel='stylesheet', type='text/css')
+  link(href="/docs/font-awesome/css/fontello.min.css?v=#{appVersion}", rel='stylesheet', type='text/css')
 
   // UI CSS
-  link(href='docs/ui.css', rel='stylesheet')
+  link(href="/docs/ui.css?v=#{appVersion}", rel='stylesheet')

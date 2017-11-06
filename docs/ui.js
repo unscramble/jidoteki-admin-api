@@ -61,7 +61,12 @@
     sha256 = getToken();
     if (sha256 != null) {
       hmac = getHmac("GET" + endpoint, sha256);
-      return $.get("" + apiServer + endpoint + "?hash=" + hmac).done(function(response) {
+      $.ajaxSetup({
+        headers: {
+          'Auth-Hash': hmac
+        }
+      });
+      return $.get("" + apiServer + endpoint).done(function(response) {
         return callback(null, response);
       }).fail(function(err) {
         return callback(new Error(err));
@@ -96,9 +101,12 @@
       $(".jido-page-content-" + msg + " .progress .progress-bar").attr('style', 'width: 33%');
       $(".jido-page-content-" + msg + " .progress").show();
       return $.ajax({
-        url: "" + apiServer + endpoint + "?hash=" + hmac,
+        url: "" + apiServer + endpoint,
         type: "POST",
         data: file,
+        headers: {
+          'Auth-Hash': hmac
+        },
         processData: false,
         contentType: false,
         success: function(response, status, jqXHR) {

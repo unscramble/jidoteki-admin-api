@@ -4,7 +4,10 @@
 #
 # Copyright (c) 2015-2017 Alexander Williams, Unscramble <license@unscramble.jp>
 
+[de health-data ()
+  (in (pack *Admin_path "etc/health.json") (till NIL T) ]
+
 [de api-request-get ()
-  (response-json-nocache (pack *Admin_path "etc/health.json") 200 T) ]
+  (response-json-nocache (health-data) 200) ]
 
 (check-auth "GET")

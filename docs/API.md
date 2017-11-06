@@ -108,11 +108,29 @@ If setting the new API token fails, `400 Bad Request` will be returned.
 
 # <a name="authentication"></a>2. Authentication
 
-There are two methods to perform authentication: `token` and `hash`.
+There are three methods to perform authentication: `token`, `cookie`, `hash`.
 
-Every API endpoint requires a valid `API token` or `HMAC hash` to be sent as a query parameter, **except during initial setup**.
+API endpoints require a valid `API token`, `SHA256 hash`, or `HMAC hash` to be sent as a query parameter or an http header, **except during initial setup**.
 
-Once the `token` is set, it is recommended to only use `hash` authentication, to avoid sending the cleartext `token` on every request.
+### Order of importance
+
+Once the `API token` is set, it is recommended to only use `hash` authentication.
+
+1. Most secure: `hash` authentication, requires a **different hashed/computed** token for each endpoint
+2. Slightly secure: `cookie`, requires the **same hashed** token for each endpoint
+3. Least secure: `token` authentication, requires the **same cleartext** token for each endpoint
+
+### HTTP header authentication
+
+**Since**
+
+`>= v1.19.0`
+
+It is possible to authenticate using `token`, `cookie`, or `hash` methods by sending the appropriate http header:
+
+* **token**: `Auth-Token: [yourtoken]`
+* **cookie**: `Auth-Cookie: [sha256hash]`
+* **hash**: `Auth-Hash: [sha256hmachash]`
 
 ## API token authentication
 
@@ -120,7 +138,23 @@ Once the `token` is set, it is recommended to only use `hash` authentication, to
 
 `>= v1.0.0`
 
-Query parameter: `?token=[yourtoken]`
+* Query parameter: `?token=[yourtoken]`
+* HTTP header: `Auth-Token: [yourtoken]`
+
+#### i. Append the API token as a query parameter:
+
+```
+GET /api/v1/admin/version?token=yourtoken
+```
+
+or
+
+#### i. Append the API token as an http header:
+
+```
+GET /api/v1/admin/version
+Auth-Token: yourtoken
+```
 
 ## HMAC hash authentication
 
@@ -128,7 +162,8 @@ Query parameter: `?token=[yourtoken]`
 
 `>= v1.9.0`
 
-Query parameter: `?hash=[sha256hmachash]`
+* Query parameter: `?hash=[sha256hmachash]`
+* HTTP header: `Auth-Hash: [sha256hmachash]`
 
 To use `hash` authentication, an HMAC hash must be generated for each API endpoint, using the steps below.
 
@@ -156,6 +191,52 @@ This should return the SHA256 _HMAC_ hash: `b714a60732e096ccef06e360eefe0f1ba4fa
 
 ```
 GET /api/v1/admin/version?hash=b714a60732e096ccef06e360eefe0f1ba4fa5d16ef7da726612e2026e5523241
+```
+
+or
+
+#### iii. Append the HMAC hash as an http header:
+
+```
+GET /api/v1/admin/version
+Auth-Hash: b714a60732e096ccef06e360eefe0f1ba4fa5d16ef7da726612e2026e5523241
+```
+
+## Cookie authentication
+
+**Since**
+
+`>= v1.19.0`
+
+* HTTP cookie: `jidoteki-admin-api-token=[sha256hash]`
+* HTTP header: `Auth-Cookie: [sha256hash]`
+
+To use `cookie` authentication, an SHA256 hash of the API token must be generated, using the steps below.
+
+#### i. Generate an sha256 hash of your API token:
+
+Hash your API token without a newline at the end.
+
+```
+echo -n "yourtoken" | openssl dgst -sha256
+```
+
+This should return the SHA256 _token_ hash: `13e2ff941bbc8692cad141c8d293dda2c4f1c1a3c51b93d54f1a1693e1206107`
+
+#### ii. Append the SHA256 token hash as an http cookie:
+
+```
+GET /api/v1/admin/version
+Cookie: jidoteki-admin-api-token=13e2ff941bbc8692cad141c8d293dda2c4f1c1a3c51b93d54f1a1693e1206107
+```
+
+or
+
+#### ii. Append the SHA256 token hash as an http header:
+
+```
+GET /api/v1/admin/version
+Auth-Cookie: 13e2ff941bbc8692cad141c8d293dda2c4f1c1a3c51b93d54f1a1693e1206107
 ```
 
 ## Authentication errors
@@ -195,9 +276,7 @@ multipart/form-data
 **Example**
 
 ```
-curl -X POST https://[hostname]:8443/api/v1/admin/setup?hash=[sha256hmachash] -F newtoken=[yourtoken]
-or
-curl -X POST https://[hostname]:8443/api/v1/admin/setup?token=[yourtoken] -F newtoken=[yourtoken]
+curl -X POST https://[hostname]:8443/api/v1/admin/setup -F newtoken=[yourtoken]
 ```
 
 **Success response**
@@ -251,9 +330,7 @@ multipart/form-data
 **Example**
 
 ```
-curl -X POST https://[hostname]:8443/api/v1/admin/update?hash=[sha256hmachash] -F update=@[software_package-name.enc]
-or
-curl -X POST https://[hostname]:8443/api/v1/admin/update?token=[yourtoken] -F update=@[software_package-name.enc]
+curl -X POST https://[hostname]:8443/api/v1/admin/update -F update=@[software_package-name.enc]
 ```
 
 **Success response**
@@ -292,9 +369,7 @@ GET
 **Example**
 
 ```
-curl -X GET https://[hostname]:8443/api/v1/admin/update?hash=[sha256hmachash]
-or
-curl -X GET https://[hostname]:8443/api/v1/admin/update?token=[yourtoken]
+curl -X GET https://[hostname]:8443/api/v1/admin/update
 ```
 
 **Success response**
@@ -359,9 +434,7 @@ GET
 **Example**
 
 ```
-curl -X GET https://[hostname]:8443/api/v1/admin/update/log?hash=[sha256hmachash]
-or
-curl -X GET https://[hostname]:8443/api/v1/admin/update/log?token=[yourtoken]
+curl -X GET https://[hostname]:8443/api/v1/admin/update/log
 ```
 
 **Success response**
@@ -407,9 +480,7 @@ GET
 **Example**
 
 ```
-curl -X GET https://[hostname]:8443/api/v1/admin/logs?hash=[sha256hmachash]
-or
-curl -X GET https://[hostname]:8443/api/v1/admin/logs?token=[yourtoken]
+curl -X GET https://[hostname]:8443/api/v1/admin/logs
 ```
 
 **Success response**
@@ -449,9 +520,7 @@ GET
 **Example**
 
 ```
-curl -X GET https://[hostname]:8443/api/v1/admin/debug?hash=[sha256hmachash]
-or
-curl -X GET https://[hostname]:8443/api/v1/admin/debug?token=[yourtoken]
+curl -X GET https://[hostname]:8443/api/v1/admin/debug
 ```
 
 **Success response**
@@ -499,9 +568,7 @@ GET
 **Example**
 
 ```
-curl -X GET https://[hostname]:8443/api/v1/admin/reboot?hash=[sha256hmachash]
-or
-curl -X GET https://[hostname]:8443/api/v1/admin/reboot?token=[yourtoken]
+curl -X GET https://[hostname]:8443/api/v1/admin/reboot
 ```
 
 **Success response**
@@ -543,9 +610,7 @@ GET
 **Example**
 
 ```
-curl -X GET https://[hostname]:8443/api/v1/admin/services?hash=[sha256hmachash]
-or
-curl -X GET https://[hostname]:8443/api/v1/admin/services?token=[yourtoken]
+curl -X GET https://[hostname]:8443/api/v1/admin/services
 ```
 
 **Success response**
@@ -591,9 +656,7 @@ GET
 **Example**
 
 ```
-curl -X GET https://[hostname]:8443/api/v1/admin/version?hash=[sha256hmachash]
-or
-curl -X GET https://[hostname]:8443/api/v1/admin/version?token=[yourtoken]
+curl -X GET https://[hostname]:8443/api/v1/admin/version
 ```
 
 **Success response**
@@ -633,9 +696,7 @@ GET
 **Example**
 
 ```
-curl -X GET https://[hostname]:8443/api/v1/admin/changelog?hash=[sha256hmachash]
-or
-curl -X GET https://[hostname]:8443/api/v1/admin/changelog?token=[yourtoken]
+curl -X GET https://[hostname]:8443/api/v1/admin/changelog
 ```
 
 **Success response**
@@ -680,9 +741,7 @@ GET
 **Example**
 
 ```
-curl -X GET https://[hostname]:8443/api/v1/admin/build?hash=[sha256hmachash]
-or
-curl -X GET https://[hostname]:8443/api/v1/admin/build?token=[yourtoken]
+curl -X GET https://[hostname]:8443/api/v1/admin/build
 ```
 
 **Success response**
@@ -722,9 +781,7 @@ GET
 **Example**
 
 ```
-curl -X GET https://[hostname]:8443/api/v1/admin/health?hash=[sha256hmachash]
-or
-curl -X GET https://[hostname]:8443/api/v1/admin/health?token=[yourtoken]
+curl -X GET https://[hostname]:8443/api/v1/admin/health
 ```
 
 **Success response**
@@ -780,9 +837,7 @@ GET
 **Example**
 
 ```
-curl -X GET https://[hostname]:8443/api/v1/admin/endpoints?hash=[sha256hmachash]
-or
-curl -X GET https://[hostname]:8443/api/v1/admin/endpoints?token=[yourtoken]
+curl -X GET https://[hostname]:8443/api/v1/admin/endpoints
 ```
 
 **Success response**
@@ -902,9 +957,7 @@ Omit the `ip_address, netmask, gateway` fields, and the network settings will au
 **Example**
 
 ```
-curl -X POST https://[hostname]:8443/api/v1/admin/settings?hash=[sha256hmachash] -F settings=@[settings.json]
-or
-curl -X POST https://[hostname]:8443/api/v1/admin/settings?token=[yourtoken] -F settings=@[settings.json]
+curl -X POST https://[hostname]:8443/api/v1/admin/settings -F settings=@[settings.json]
 ```
 
 **Success response**
@@ -943,9 +996,7 @@ GET
 **Example**
 
 ```
-curl -X GET https://[hostname]:8443/api/v1/admin/settings?hash=[sha256hmachash]
-or
-curl -X GET https://[hostname]:8443/api/v1/admin/settings?token=[yourtoken]
+curl -X GET https://[hostname]:8443/api/v1/admin/settings
 ```
 
 **Success response**
@@ -1045,9 +1096,7 @@ GEs=
 **Example**
 
 ```
-curl -X POST https://[hostname]:8443/api/v1/admin/certs?hash=[sha256hmachash] -F public=@[hostname.pem] -F private=@[hostname.key] -F ca=@[ca-cert.pem]
-or
-curl -X POST https://[hostname]:8443/api/v1/admin/certs?token=[yourtoken] -F public=@[hostname.pem] -F private=@[hostname.key] -F ca=@[ca-cert.pem]
+curl -X POST https://[hostname]:8443/api/v1/admin/certs -F public=@[hostname.pem] -F private=@[hostname.key] -F ca=@[ca-cert.pem]
 ```
 
 **Success response**
@@ -1085,9 +1134,7 @@ GET
 **Example**
 
 ```
-curl -X GET https://[hostname]:8443/api/v1/admin/certs?hash=[sha256hmachash]
-or
-curl -X GET https://[hostname]:8443/api/v1/admin/certs?token=[yourtoken]
+curl -X GET https://[hostname]:8443/api/v1/admin/certs
 ```
 
 **Success response**
@@ -1146,9 +1193,7 @@ multipart/form-data
 **Example**
 
 ```
-curl -X POST https://[hostname]:8443/api/v1/admin/license?hash=[sha256hmachash] -F license=@[license.asc]
-or
-curl -X POST https://[hostname]:8443/api/v1/admin/license?token=[yourtoken] -F license=@[license.asc]
+curl -X POST https://[hostname]:8443/api/v1/admin/license -F license=@[license.asc]
 ```
 
 **Success response**
@@ -1194,9 +1239,7 @@ GET
 **Example**
 
 ```
-curl -X GET https://[hostname]:8443/api/v1/admin/license?hash=[sha256hmachash]
-or
-curl -X GET https://[hostname]:8443/api/v1/admin/license?token=[yourtoken]
+curl -X GET https://[hostname]:8443/api/v1/admin/license
 ```
 
 **Success response**
@@ -1356,9 +1399,7 @@ multipart/form-data
 **Example**
 
 ```
-curl -X POST https://[hostname]:8443/api/v1/admin/storage?hash=[sha256hmachash] -F settings=@[settings.json]
-or
-curl -X POST https://[hostname]:8443/api/v1/admin/storage?token=[yourtoken] -F settings=@[settings.json]
+curl -X POST https://[hostname]:8443/api/v1/admin/storage -F settings=@[settings.json]
 ```
 
 **Success response**
@@ -1397,9 +1438,7 @@ GET
 **Example**
 
 ```
-curl -X GET https://[hostname]:8443/api/v1/admin/storage?hash=[sha256hmachash]
-or
-curl -X GET https://[hostname]:8443/api/v1/admin/storage?token=[yourtoken]
+curl -X GET https://[hostname]:8443/api/v1/admin/storage
 ```
 
 **Success response**
@@ -1459,9 +1498,7 @@ multipart/form-data
 **Example**
 
 ```
-curl -X POST https://[hostname]:8443/api/v1/admin/backup?hash=[sha256hmachash] -F action=START
-or
-curl -X POST https://[hostname]:8443/api/v1/admin/backup?token=[yourtoken] -F action=START
+curl -X POST https://[hostname]:8443/api/v1/admin/backup -F action=START
 ```
 
 **Success response**
@@ -1631,9 +1668,7 @@ multipart/form-data
 **Example**
 
 ```
-curl -X POST https://[hostname]:8443/api/v1/admin/backup/restore?hash=[sha256hmachash] -F archive=@[backup.tar]
-or
-curl -X POST https://[hostname]:8443/api/v1/admin/backup/restore?token=[yourtoken] -F archive=@[backup.tar]
+curl -X POST https://[hostname]:8443/api/v1/admin/backup/restore -F archive=@[backup.tar]
 ```
 
 **Success response**
