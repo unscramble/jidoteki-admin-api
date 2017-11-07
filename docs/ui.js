@@ -8,7 +8,7 @@
 
 (function() {
   'use strict';
-  var apiEndpoints, apiServer, apiType, authenticate, backupButtonListener, capitalize, certsButtonListener, clearToken, debugButtonListener, drawGraphs, failedUpload, fetchData, fetchFile, getHmac, getSha256, getStatus, getToken, loadBackup, loadHome, loadLogin, loadMonitor, loadNetwork, loadSetup, loadStorage, loadSupport, loadToken, loadUpdateCerts, loginButtonListener, logoutButtonListener, logsButtonListener, monitorButtonListener, monitorClick, navbarListener, networkButtonListener, newTokenButtonListener, pollStatus, putFile, putToken, redirectUrl, reloadEndpoints, reloadHealth, restartButtonListener, runningUpload, storageButtonListener, storageSelectListener, successUpload, tokenButtonListener, updateButtonListener, updateCertsButtonListener,
+  var apiEndpoints, apiServer, apiType, authenticate, backupButtonListener, capitalize, certsButtonListener, clearToken, debugButtonListener, drawGraphs, failedUpload, fetchData, fetchFile, getHmac, getSha256, getStatus, getToken, loadBackup, loadHome, loadLogin, loadMonitor, loadNetwork, loadReplication, loadSetup, loadStorage, loadSupport, loadToken, loadUpdateCerts, loginButtonListener, logoutButtonListener, logsButtonListener, monitorButtonListener, monitorClick, navbarListener, networkButtonListener, newTokenButtonListener, pollStatus, putFile, putToken, redirectUrl, reloadEndpoints, reloadHealth, restartButtonListener, runningUpload, storageButtonListener, storageSelectListener, successUpload, tokenButtonListener, updateButtonListener, updateCertsButtonListener,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   apiServer = window.location.origin != null ? window.location.origin : window.location.protocol + "//" + window.location.hostname + (window.location.port != null ? ':' + window.location.port : '');
@@ -691,6 +691,33 @@
     });
   };
 
+  loadReplication = function() {
+    $('#jido-page-login').hide();
+    $('.jido-page-content').hide();
+    $('#jido-page-navbar .navbar-nav li').removeClass('active');
+    $('#jido-button-replication').addClass('active');
+    $('#jido-page-navbar').show();
+    $('#jido-page-replication').show();
+    fetchData("/api/v1/admin/version", function(err, result) {
+      if (!err) {
+        return $('.jido-data-platform-version').html(validator.escape(result.version));
+      }
+    });
+    return getStatus("replication", function(result) {
+      if (result.status === "running") {
+        return pollStatus("replication");
+      } else if (result.status === "success") {
+        $('#replicationInfo').show();
+        $('#jido-button-replication-stop').show();
+        $('#jido-page-replication pre.replication-status-filesize').html(validator.escape(result.filesize));
+        return $('#jido-page-replication pre.replication-status-sha256').html(validator.escape(result.sha256));
+      } else {
+        $('#replicationInfo').hide();
+        return $('#jido-button-replication-stop').hide();
+      }
+    });
+  };
+
 
   /* generic functions */
 
@@ -1171,6 +1198,9 @@
           break;
         case "jido-button-backup":
           loadBackup();
+          break;
+        case "jido-button-replication":
+          loadReplication();
       }
       return reloadHealth();
     });

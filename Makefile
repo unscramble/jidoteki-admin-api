@@ -17,46 +17,46 @@ TEST_REPO = $(REPO_PREFIX)/picolisp-unit.git
 TEST_DIR = $(PIL_MODULE_DIR)/picolisp-unit/HEAD
 
 # Generic
-.PHONY: all clean
+.PHONY: all clean html
 
 all: $(JSON_DIR) $(SEMVER_DIR)
 
 $(JSON_DIR):
-		mkdir -p $(JSON_DIR) && \
-		git clone $(JSON_REPO) $(JSON_DIR) && \
-		cd $(JSON_DIR) && \
-		git checkout $(JSON_REF) && \
-		$(MAKE)
+	mkdir -p $(JSON_DIR) && \
+	git clone $(JSON_REPO) $(JSON_DIR) && \
+	cd $(JSON_DIR) && \
+	git checkout $(JSON_REF) && \
+	$(MAKE)
 
 $(SEMVER_DIR):
-		mkdir -p $(SEMVER_DIR) && \
-		git clone $(SEMVER_REPO) $(SEMVER_DIR) && \
-		cd $(SEMVER_DIR) && \
-		git checkout $(SEMVER_REF) && \
-		$(MAKE)
+	mkdir -p $(SEMVER_DIR) && \
+	git clone $(SEMVER_REPO) $(SEMVER_DIR) && \
+	cd $(SEMVER_DIR) && \
+	git checkout $(SEMVER_REF) && \
+	$(MAKE)
 
 $(TEST_DIR):
-		mkdir -p $(TEST_DIR) && \
-		git clone $(TEST_REPO) $(TEST_DIR)
+	mkdir -p $(TEST_DIR) && \
+	git clone $(TEST_REPO) $(TEST_DIR)
 
 check: all $(TEST_DIR) run-tests
 
 run-tests:
-		PIL_NAMESPACES=false ./test.l
+	PIL_NAMESPACES=false ./test.l
 
 html:
-		jade -o . -P -E html ui/index.jade
+	jade -o . -P -E html ui/index.jade
 
 javascript:
-		cat ui/license.coffee ui/generic.coffee ui/ui.coffee | coffee --no-header -c -s > docs/ui.js
+	cat ui/license.coffee ui/generic.coffee ui/ui.coffee | coffee --no-header -c -s > docs/ui.js
 
 js: javascript
 
 minify:
-		head -n 8 docs/ui.js > docs/ui.min.js
-		minify docs/ui.js >> docs/ui.min.js
+	head -n 8 docs/ui.js > docs/ui.min.js
+	minify docs/ui.js >> docs/ui.min.js
 
 ui: html javascript minify
 
 clean:
-		rm -rf $(JSON_DIR) $(SEMVER_DIR) $(TEST_DIR)
+	rm -rf $(JSON_DIR) $(SEMVER_DIR) $(TEST_DIR)

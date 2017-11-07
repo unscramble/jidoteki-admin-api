@@ -204,6 +204,30 @@ loadBackup = ->
       $('#backupInfo').hide()
       $('#jido-button-backup-stop').hide()
 
+loadReplication = ->
+  $('#jido-page-login').hide()
+  $('.jido-page-content').hide()
+  $('#jido-page-navbar .navbar-nav li').removeClass('active')
+  $('#jido-button-replication').addClass('active')
+  $('#jido-page-navbar').show()
+  $('#jido-page-replication').show()
+
+  fetchData "/api/v1/admin/version", (err, result) ->
+    unless err
+      $('.jido-data-platform-version').html validator.escape(result.version)
+
+  getStatus "replication", (result) ->
+    if result.status is "running"
+      pollStatus "replication"
+    else if result.status is "success"
+      $('#replicationInfo').show()
+      $('#jido-button-replication-stop').show()
+      $('#jido-page-replication pre.replication-status-filesize').html validator.escape(result.filesize)
+      $('#jido-page-replication pre.replication-status-sha256').html validator.escape(result.sha256)
+    else
+      $('#replicationInfo').hide()
+      $('#jido-button-replication-stop').hide()
+
 ### generic functions ###
 monitorClick = (result) ->
   makeGraph = (clicked) ->
@@ -592,6 +616,7 @@ navbarListener = ->
       when "jido-button-support"  then loadSupport()
       when "jido-button-monitor"  then loadMonitor()
       when "jido-button-backup"   then loadBackup()
+      when "jido-button-replication" then loadReplication()
 
     reloadHealth()
 

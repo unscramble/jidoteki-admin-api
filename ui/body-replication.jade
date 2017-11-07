@@ -21,25 +21,13 @@ mixin sectionMain
         fieldset
           .col-lg-12.col-md-12.col-sm-12
             .form-group
-              label.control-label.replication-type-label(for='type-input')
-                | Replication type
-              select#replication-name-select.form-control(tabindex='21')
             div(id="#{sectionName}Forms")
-              //- mixin getNFS()
-              //- mixin getAOE()
-              //- mixin getISCSI()
-              //- mixin getNBD()
             .form-group
               br
               input.btn.btn-lg.btn-primary.btn-block(id="jido-button-#{sectionName}-upload", type='submit', value='Update', onclick='return event.preventDefault();')
 
 mixin sectionInfo
   .panel-body(id="#{sectionName}Help")
-    //- mixin helpLOCAL()
-    //- mixin helpNFS()
-    //- mixin helpAOE()
-    //- mixin helpISCSI()
-    //- mixin helpNBD()
 
 +sectionHeader(sectionName, sectionTitle)
 

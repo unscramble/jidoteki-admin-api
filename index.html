@@ -8,11 +8,11 @@
     <meta name="author" content="">
     <title>Admin Dashboard</title>
     <!-- Bootstrap Core CSS-->
-    <link href="docs/themes/bootstrap.min.css" rel="stylesheet">
+    <link href="/docs/themes/bootstrap.min.css?v=1.19.0" rel="stylesheet">
     <!-- Fontello / Font Awesome CSS-->
-    <link href="docs/font-awesome/css/fontello.min.css" rel="stylesheet" type="text/css">
+    <link href="/docs/font-awesome/css/fontello.min.css?v=1.19.0" rel="stylesheet" type="text/css">
     <!-- UI CSS-->
-    <link href="docs/ui.css" rel="stylesheet">
+    <link href="/docs/ui.css?v=1.19.0" rel="stylesheet">
   </head>
   <body>
     <div id="jido-page-navbar" style="display:none">
@@ -29,6 +29,7 @@
               <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle"><i class="fa icon-cog-alt"></i> Settings<span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li id="jido-button-backup" style="display:none;"><a href="#"><i class="fa icon-floppy"></i> Backup/Restore</a></li>
+                  <li id="jido-button-replication" style="display:none;"><a href="#"><i class="fa icon-server"></i> Replication</a></li>
                   <li id="jido-button-settings" style="display:none;"><a href="#"><i class="fa icon-sitemap"></i> Network</a></li>
                   <li id="jido-button-certs" style="display:none;"><a href="#"><i class="fa icon-lock"></i> TLS Certificates</a></li>
                   <li id="jido-button-storage" style="display:none;"><a href="#"><i class="fa icon-database"></i> Storage</a></li>
@@ -713,12 +714,8 @@
                         <form role="form" class="replication-form">
                           <fieldset>
                             <div class="col-lg-12 col-md-12 col-sm-12">
-                              <div class="form-group">
-                                <label for="type-input" class="control-label replication-type-label">Replication type</label>
-                                <select id="replication-name-select" tabindex="21" class="form-control"></select>
-                              </div>
-                              <div id="replicationForms">
-                              </div>
+                              <div class="form-group"></div>
+                              <div id="replicationForms"></div>
                               <div class="form-group"><br>
                                 <input id="jido-button-replication-upload" type="submit" value="Update" onclick="return event.preventDefault();" class="btn btn-lg btn-primary btn-block">
                               </div>
@@ -734,8 +731,7 @@
                 <div class="panel-heading">
                   <h3 class="panel-title"><i class="fa icon-info-circled"></i> Information</h3>
                 </div>
-                    <div id="replicationHelp" class="panel-body">
-                    </div>
+                    <div id="replicationHelp" class="panel-body"></div>
               </div>
             </div>
           </div>
@@ -809,22 +805,22 @@ GEs=
         </div>
       </div>
     </div>
-    <script src="docs/jquery/jquery.min.js"></script>
-    <script src="docs/forge/forge.min.js"></script>
-    <script src="docs/validator/validator.min.js"></script>
-    <script src="docs/themes/bootstrap.min.js"></script>
-    <script src="docs/jsrrdgraph/binaryxhr.js"></script>
-    <script src="docs/jsrrdgraph/rrdcmdline.js"></script>
-    <script src="docs/jsrrdgraph/rrddatafile.js"></script>
-    <script src="docs/jsrrdgraph/rrdfile.js"></script>
-    <script src="docs/jsrrdgraph/rrdgfxcanvas.js"></script>
-    <script src="docs/jsrrdgraph/rrdgraph.min.js"></script>
-    <script src="docs/jsrrdgraph/rrdrpn.js"></script>
-    <script src="docs/jsrrdgraph/rrdtime.js"></script>
-    <script src="docs/jsrrdgraph/sprintf.js"></script>
-    <script src="docs/jsrrdgraph/strftime.js"></script>
-    <script src="docs/jsrrdgraph/draw.js"></script>
-    <script src="docs/ui.min.js"></script>
+    <script src="/docs/jquery/jquery.min.js?v=1.19.0"></script>
+    <script src="/docs/forge/forge.min.js?v=1.19.0"></script>
+    <script src="/docs/validator/validator.min.js?v=1.19.0"></script>
+    <script src="/docs/themes/bootstrap.min.js?v=1.19.0"></script>
+    <script src="/docs/jsrrdgraph/binaryxhr.js?v=1.19.0"></script>
+    <script src="/docs/jsrrdgraph/rrdcmdline.js?v=1.19.0"></script>
+    <script src="/docs/jsrrdgraph/rrddatafile.js?v=1.19.0"></script>
+    <script src="/docs/jsrrdgraph/rrdfile.js?v=1.19.0"></script>
+    <script src="/docs/jsrrdgraph/rrdgfxcanvas.js?v=1.19.0"></script>
+    <script src="/docs/jsrrdgraph/rrdgraph.min.js?v=1.19.0"></script>
+    <script src="/docs/jsrrdgraph/rrdrpn.js?v=1.19.0"></script>
+    <script src="/docs/jsrrdgraph/rrdtime.js?v=1.19.0"></script>
+    <script src="/docs/jsrrdgraph/sprintf.js?v=1.19.0"></script>
+    <script src="/docs/jsrrdgraph/strftime.js?v=1.19.0"></script>
+    <script src="/docs/jsrrdgraph/draw.js?v=1.19.0"></script>
+    <script src="/docs/ui.min.js?v=1.19.0"></script>
     <div style="margin-bottom:0;margin-top:3em;position:relative;bottom:0px;width:100%;" class="well text-right text-muted jido-smalltext">Powered by Jidoteki.com - v1.19.0 - <a href="/docs/NOTICE.TXT">Copyright notices</a></div>
     <!-- This Source Code Form is subject to the terms of the Mozilla Public-->
     <!-- License, v. 2.0. If a copy of the MPL was not distributed with this-->
