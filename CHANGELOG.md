@@ -2,6 +2,13 @@
 
 ## 1.19.0 (TBD)
 
+## 1.18.3 (2017-11-16)
+
+  ### Minor fixes
+
+  * [html] Ensure HTTPS security headers are sent for downloads and HTML/404 pages
+  * [dashboard] Set `autocomplete=off` on storage page
+
 ## 1.18.2 (2017-11-02)
 
   ### Regression fixes

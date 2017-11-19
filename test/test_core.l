@@ -33,6 +33,22 @@
         (= (line) '("C" "o" "n" "t" "e" "n" "t" "-" "T" "y" "p" "e" ":" " " "a" "p" "p" "l" "i" "c" "a" "t" "i" "o" "n" "/" "j" "s" "o" "n")) )
       T ]
 
+[de test-200-ok-http1 ()
+  (pipe
+    (http1)
+    (when
+      (and
+        (= (line) '("H" "T" "T" "P" "/" "1" "." "0" " " "2" "0" "0" " " "O" "K"))
+        (= (line) '("S" "e" "r" "v" "e" "r" ":" " " "P" "i" "c" "o" "L" "i" "s" "p"))
+        (line) # Skip the Date header
+        (= (line) '("C" "o" "n" "t" "e" "n" "t" "-" "T" "y" "p" "e" ":" " " "t" "e" "x" "t" "/" "h" "t" "m" "l" ";" " " "c" "h" "a" "r" "s" "e" "t" "=" "u" "t" "f" "-" "8"))
+        # Verify the Secure HTTP headers
+        (= (line) '("S" "t" "r" "i" "c" "t" "-" "T" "r" "a" "n" "s" "p" "o" "r" "t" "-" "S" "e" "c" "u" "r" "i" "t" "y" ":" " " "m" "a" "x" "-" "a" "g" "e" "=" "3" "1" "5" "3" "6" "0" "0" "0" " " ";" " " "i" "n" "c" "l" "u" "d" "e" "S" "u" "b" "D" "o" "m" "a" "i" "n" "s"))
+        (= (line) '("X" "-" "F" "r" "a" "m" "e" "-" "O" "p" "t" "i" "o" "n" "s" ":" " " "d" "e" "n" "y"))
+        (= (line) '("X" "-" "X" "S" "S" "-" "P" "r" "o" "t" "e" "c" "t" "i" "o" "n" ":" " " "1"))
+        (= (line) '("X" "-" "C" "o" "n" "t" "e" "n" "t" "-" "T" "y" "p" "e" "-" "O" "p" "t" "i" "o" "n" "s" ":" " " "n" "o" "s" "n" "i" "f" "f")) )
+      T ]
+
 [de test-202-accepted ()
   (pipe
     (http-msg 202)
@@ -144,6 +160,7 @@
   '(assert-t      (test-update-token) "Ensure token gets updated")
   '(assert-equal  "OK" (http-code 200) "Ensure the HTTP message for 200 is 'OK'")
   '(assert-t      (test-202-accepted) "Ensure the HTTP message for 202 is returned as JSON")
+  '(assert-t      (test-200-ok-http1) "Ensure the HTTP message for 200 is returned as OK (http1)")
   '(assert-t      (test-json-file) "Ensure JSON file is validated")
   '(assert-t      (test-json-string) "Ensure JSON string is validated")
   '(assert-t      (test-response-json) "Ensure a generic HTTP response is returned")

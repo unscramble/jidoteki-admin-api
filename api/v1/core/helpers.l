@@ -109,6 +109,28 @@
 (de http404 ()
   (http-msg 404) )
 
+(undef 'http1)
+
+(de http1 (Typ Upd File Att)
+   (prinl "HTTP/1." *Http1 " 200 OK^M")
+   (prinl "Server: PicoLisp^M")
+   (prin "Date: ")
+   (httpDate (date T) (time T))
+   (when Upd
+      (prinl "Cache-Control: max-age=" Upd "^M")
+      (when (=0 Upd)
+         (prinl "Cache-Control: private, no-store, no-cache^M") ) )
+   (prinl "Content-Type: " (or Typ "text/html; charset=utf-8") "^M")
+   (when File
+      (prinl
+         "Content-Disposition: "
+         (if Att "attachment" "inline")
+         "; filename=\"" File "\"^M" ) )
+    (prinl "Strict-Transport-Security: max-age=31536000 ; includeSubDomains")
+    (prinl "X-Frame-Options: deny")
+    (prinl "X-XSS-Protection: 1")
+    (prinl "X-Content-Type-Options: nosniff") )
+
 # Extensions for json.l (32-bit only)
 [unless *CPU
   (de encode (Value)
