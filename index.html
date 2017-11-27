@@ -649,7 +649,7 @@
                           <hr>
                           <div class="form-group">
                             <div class="alert alert-info">Restore will overwrite files in <code>/data</code></div>
-                            <label for="backup-restore-file" class="control-label">Restore a backup</label>
+                            <label for="backup-restore-file" class="control-label">Restore a backup <a href="#" data-toggle="modal" data-target="#jido-modal-backup-restore"><i class="fa icon-info-circled"></i></a></label>
                             <input id="backup-restore-input" placeholder="backup.tar" name="backup_file" type="file" class="form-control">
                           </div>
                           <input id="jido-button-backup-upload" type="submit" value="Restore backup" onclick="return event.preventDefault();" class="btn btn-lg btn-primary btn-block">
@@ -708,16 +708,86 @@
                   <h3 class="panel-title"><i class="fa icon-server"></i> Replication settings</h3>
                 </div>
                     <div class="panel-body">
-                      <h4>Configure Replication settings for persistent data.</h4><br>
-                      <div class="alert alert-info">All form fields are required</div>
+                      <h4>Configure Replication settings to sync data between multiple servers.</h4>
                       <div class="row">
-                        <form role="form" class="replication-form">
+                        <form role="form" autocomplete="off" class="replication-form">
                           <fieldset>
                             <div class="col-lg-12 col-md-12 col-sm-12">
-                              <div class="form-group"></div>
-                              <div id="replicationForms"></div>
+                              <div style="display:none;" class="form-group replication-status">
+                                <label for="replication-status-toggle" class="control-label">
+                                  <p>Replication status</p><a id="replication-status-toggle" href="#" style="padding:0;margin-bottom:5px;" onclick="event.preventDefault()" class="btn btn-lg enabledbutton"></a>
+                                </label>
+                              </div>
+                              <div class="form-group">
+                                <p><strong>Replication type</strong></p>
+                                <label for="replication-type-1" class="radio-inline control-label">
+                                  <input id="replication-type-1" name="replication-type-radio" value="source" type="radio">Source<a href="#" data-toggle="modal" data-target="#jido-modal-replication-source"><i class="fa icon-info-circled"></i></a>
+                                </label>
+                                <label for="replication-type-2" class="radio-inline control-label">
+                                  <input id="replication-type-2" name="replication-type-radio" value="target" type="radio">Target<a href="#" data-toggle="modal" data-target="#jido-modal-replication-target"><i class="fa icon-info-circled"></i></a>
+                                </label>
+                              </div>
+                              <div id="replicationSourceForms" style="display:none;">
+                                <div class="form-group text-success">
+                                  <label for="replication-source-input" class="control-label replication-source-label">
+                                    <p>Public SSH key</p>
+                                  </label>
+                                  <input id="replication-source-input" placeholder="Public SSH key" name="replication-source-pubkey" type="text" class="form-control">
+                                </div>
+                              </div>
+                              <div id="replicationTargetForms" style="display:none;">
+                                <div class="form-group">
+                                  <p><strong>Type</strong></p>
+                                  <label for="target-type-1" class="radio-inline control-label">
+                                    <input id="target-type-1" name="target-type-radio" value="appliance" type="radio">VM Appliance
+                                  </label>
+                                  <label for="target-type-2" class="radio-inline control-label">
+                                    <input id="target-type-2" name="target-type-radio" value="server" type="radio">SSH Server
+                                  </label>
+                                </div>
+                                    <div id="replicationTargetApplianceForms" style="display:none;">
+                                      <div class="form-group text-success">
+                                        <label for="replication-target-appliance" class="control-label replication-target-appliance-label">
+                                          <p>Hostname/IP</p>
+                                        </label>
+                                        <input id="replication-target-appliance" placeholder="Hostname/IP" name="replication-target-appliance" type="text" class="form-control">
+                                      </div>
+                                      <div class="form-group text-success">
+                                        <label for="replication-target-token" class="control-label replication-target-token-label">
+                                          <p>API token</p>
+                                        </label>
+                                        <input id="replication-target-token" placeholder="API token" name="replication-target-token" type="password" class="form-control">
+                                      </div>
+                                    </div>
+                                    <div id="replicationTargetServerForms" style="display:none;">
+                                      <div class="form-group">
+                                        <label for="replication-target-user" class="control-label replication-target-user-label">
+                                          <p>Username</p>
+                                        </label>
+                                        <input id="replication-target-user" placeholder="Username" name="replication-target-user" type="text" class="form-control">
+                                      </div>
+                                      <div class="form-group text-success">
+                                        <label for="replication-target-host" class="control-label replication-target-host-label">
+                                          <p>Hostname/IP</p>
+                                        </label>
+                                        <input id="replication-target-host" placeholder="Hostname/IP" name="replication-target-host" type="text" class="form-control">
+                                      </div>
+                                      <div class="form-group">
+                                        <label for="replication-target-port" class="control-label replication-target-port-label">
+                                          <p>SSH port</p>
+                                        </label>
+                                        <input id="replication-target-port" placeholder="SSH port" name="replication-target-port" type="text" class="form-control">
+                                      </div>
+                                      <div class="form-group">
+                                        <label for="replication-target-data" class="control-label replication-target-data-label">
+                                          <p>Destination dir</p>
+                                        </label>
+                                        <input id="replication-target-data" placeholder="Destination dir" name="replication-target-data" type="text" class="form-control">
+                                      </div>
+                                    </div>
+                              </div>
                               <div class="form-group"><br>
-                                <input id="jido-button-replication-upload" type="submit" value="Update" onclick="return event.preventDefault();" class="btn btn-lg btn-primary btn-block">
+                                <input id="jido-button-replication-upload" type="submit" value="Save" onclick="return event.preventDefault();" class="btn btn-lg btn-primary btn-block">
                               </div>
                             </div>
                           </fieldset>
@@ -731,7 +801,16 @@
                 <div class="panel-heading">
                   <h3 class="panel-title"><i class="fa icon-info-circled"></i> Information</h3>
                 </div>
-                    <div id="replicationHelp" class="panel-body"></div>
+                    <div id="replicationInfo" style="display:none;" class="panel-body">
+                      <h4>SSH key fingerprint</h4>
+                      <p>
+                        <pre class="replication-fingerprint"></pre>
+                      </p>
+                      <h4>Public SSH key</h4>
+                      <p>
+                        <pre class="jido-replication-pubkey"></pre>
+                      </p>
+                    </div>
               </div>
             </div>
           </div>
@@ -801,6 +880,80 @@ GEs=
             <p>Choose Yes to immediately restart the system.</p><br>
             <button type="button" data-dismiss="modal" class="btn btn-default"><i class="fa icon-cancel"></i> No, not yet</button>&nbsp;&nbsp;
             <button id="jido-button-restart-confirm" type="button" data-dismiss="modal" class="btn btn-danger"><i class="fa icon-ok"></i> Yes, restart it!</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="jido-modal-backup-restore" tabindex="-1" class="modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" data-dismiss="modal" aria-hidden="true" class="close">&times;</button>
+            <h4 class="modal-title">Restoring a backup</h4>
+          </div>
+          <div class="modal-body">
+            <p>The backup archive must be a <code>.tar</code> file compressed with GNU or BSD tar.</p>
+            <p>Backup contents will be restored to <code>/data</code> and will overwrite any existing files.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="jido-modal-replication-source" tabindex="-1" class="modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" data-dismiss="modal" aria-hidden="true" class="close">&times;</button>
+            <h4 class="modal-title">Replication source</h4>
+          </div>
+          <div class="modal-body">
+            <p>Data will be syncronized from a <code>source</code> appliance into<code>/data</code></p>
+            <p>Enter the<code>public SSH key</code> to be added to <code>$HOME/.ssh/authorized_keys</code></p>
+            <div class="alert alert-danger">
+              <p>Data written to <strong>/data</strong> may be overwritten during replication sync.</p>
+            </div>
+            <div class="alert alert-info">
+              <p>The file <strong>/opt/jidoteki/admin/etc/jidoteki-read-only.txt</strong> will be created.</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="jido-modal-replication-target" tabindex="-1" class="modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" data-dismiss="modal" aria-hidden="true" class="close">&times;</button>
+            <h4 class="modal-title">Replication target(s)</h4>
+          </div>
+          <div class="modal-body">
+            <p>Data will be syncronized from <code>/data</code> into the target's destination directory.</p>
+            <p>Select the type of target server:
+              <ul>
+                <li><strong>VM Appliance:</strong> a virtual appliance powered by Jidoteki <em>(similar to this one)</em></li>
+                <li><strong>SSH Server:</strong> a Linux/UNIX server which accepts SSH <em>(requires rsync)</em></li>
+              </ul>
+            </p>
+            <div class="alert alert-info">
+              <p>Multiple targets may be configured through the API.</p>
+            </div>
+            <h4>VM Appliance</h4>
+            <p>Enter the hostname/IP address, and API token of the target server.</p>
+            <p>Replication sync will be automatically created between the two servers.</p>
+            <h4>SSH Server</h4>
+            <p>Enter the username<em> (default: admin)</em> , hostname/IP address, and SSH port <em> (default: 22)</em> of the target server. It is also possible to specify </p>
+            <p>Enter the destination directory where files will be stored <em>(default: /data)</em></p>
+            <div class="alert alert-danger">
+              <p>Add the <strong>public SSH key</strong> to the target server's <strong>$HOME/.ssh/authorized_keys</strong></p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
           </div>
         </div>
       </div>

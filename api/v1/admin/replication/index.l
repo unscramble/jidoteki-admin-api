@@ -25,9 +25,25 @@
 
   (response-json-async "replication") ]
 
+# FIXME: validate targets
+[de replication-validate-target (Targets) ]
+
+[de replication-validate (Settings)
+  (let (Replication (cdr (assoc "replication" Settings)) )
+
+    (let (Status        (cdr (assoc "status" Replication))
+          Source        (cdr (assoc "replication_source_pubkey" Replication))
+          Target        (cdr (assoc "replication_targets" Replication)) )
+
+      (if Source
+          (or (validate-string-range Source 'replication_source_pubkey *Ascii_codes_printable (16 . 2048)))
+          (replication-validate-target Targets) )
+
+      (replication-save Settings) ]
+
 [de api-request-file (File)
   (if (decode File T)
-      (replication-save @)
+      (replication-validate @)
       (http-msg 400) ]
 
 [de api-request-post ()

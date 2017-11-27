@@ -212,21 +212,53 @@ loadReplication = ->
   $('#jido-page-navbar').show()
   $('#jido-page-replication').show()
 
+  # FIXME: remove these
+  reloadHealth()
+  reloadEndpoints()
+
   fetchData "/api/v1/admin/version", (err, result) ->
     unless err
       $('.jido-data-platform-version').html validator.escape(result.version)
 
   getStatus "replication", (result) ->
-    if result.status is "running"
+    if result.status and result.status is "running"
       pollStatus "replication"
-    else if result.status is "success"
-      $('#replicationInfo').show()
-      $('#jido-button-replication-stop').show()
-      $('#jido-page-replication pre.replication-status-filesize').html validator.escape(result.filesize)
-      $('#jido-page-replication pre.replication-status-sha256').html validator.escape(result.sha256)
-    else
-      $('#replicationInfo').hide()
-      $('#jido-button-replication-stop').hide()
+
+    if result.replication
+      replication = result.replication
+
+      if result.ssh_fingerprint and result.ssh_pubkey
+        $('#replicationInfo').show()
+        if result.ssh_fingerprint then $('#jido-page-replication pre.replication-fingerprint').html validator.escape(result.ssh_fingerprint)
+        if result.ssh_pubkey then $('#jido-page-replication pre.jido-replication-pubkey').html validator.escape(result.ssh_pubkey)
+
+      if replication.replication_source_pubkey
+        $('#replication-type-1').prop("checked", true)
+        $('#replicationSourceForms').show()
+        $("#replication-source-input").val validator.escape(replication.replication_source_pubkey)
+      else if replication.replication_targets[0]
+        $('#replicationTargetForms').show()
+        $('#replication-type-2').prop("checked", true)
+
+        if replication.replication_targets[0].token
+          $('#replicationTargetApplianceForms').show()
+          $('#target-type-1').prop("checked", true)
+          $("#replication-target-appliance").val validator.escape(replication.replication_targets[0].host)
+          $("#replication-target-token").val validator.escape(replication.replication_targets[0].token)
+        else
+          $('#replicationTargetServerForms').show()
+          $('#target-type-2').prop("checked", true)
+          $("#replication-target-user").val validator.escape(replication.replication_targets[0].user)
+          $("#replication-target-host").val validator.escape(replication.replication_targets[0].host)
+          $("#replication-target-port").val replication.replication_targets[0].port
+          $("#replication-target-data").val replication.replication_targets[0].data
+
+      if replication.replication_status is "enabled"
+        $('#jido-page-replication .replication-status').show()
+        $('#jido-page-replication .enabledbutton').html "<strong class=\"fa icon-toggle-on text-success\"> enabled</strong>"
+      else
+        $('#jido-page-replication .replication-status').show()
+        $('#jido-page-replication .enabledbutton').html "<strong class=\"fa icon-toggle-off text-danger\"> disabled</strong>"
 
 ### generic functions ###
 monitorClick = (result) ->
@@ -602,6 +634,120 @@ backupButtonListener = () ->
 
         $(".jido-page-content-backup .progress").hide()
 
+replicationButtonListener = ->
+  $('#jido-button-replication-upload').click ->
+
+    json = new Object()
+    json.replication = {}
+    json.replication.replication_status = "enabled"
+
+    # Validations
+    repl1 = $('#replication-type-1').is(':checked')
+    repl2 = $('#replication-type-2').is(':checked')
+
+    replication_type = if repl1 == true then 'source' else 'target'
+    switch replication_type
+      when 'source'
+        json.replication.replication_source_pubkey = $('#replication-source-input').val()
+
+        unless json.replication.replication_source_pubkey and validator.isAscii(json.replication.replication_source_pubkey)
+          $("#jido-page-replication .replication-source-label").parent().addClass 'has-error'
+          $("#jido-page-replication .replication-source-label p").html 'Public SSH key (required)<br/>Allowed: ASCII characters'
+          $("#replication-source-input").focus()
+          return
+
+      when 'target'
+        json.replication.replication_targets = []
+        json.replication.replication_targets[0] = {}
+
+        type1 = $('#target-type-1').is(':checked')
+        type2 = $('#target-type-2').is(':checked')
+
+        target_type = if type1 == true then 'appliance' else 'server'
+        switch target_type
+          when 'appliance'
+            json.replication.replication_targets[0].host = $('#replication-target-appliance').val()
+            json.replication.replication_targets[0].token = $('#replication-target-token').val()
+
+            unless validator.isFQDN(json.replication.replication_targets[0].host, {require_tld: false}) or validator.isIP(json.replication.replication_targets[0].host)
+              $("#jido-page-replication .replication-target-appliance-label").parent().addClass 'has-error'
+              $("#jido-page-replication .replication-target-appliance-label p").html 'Hostname/IP (required)<br/>Allowed: FQDN, IPv4, IPv6'
+              $("#replication-target-appliance").focus()
+              return
+
+            unless json.replication.replication_targets[0].token.length > 0 && json.replication.replication_targets[0].token.length <= 255
+              $("#jido-page-replication .replication-target-token-label").parent().addClass 'has-error'
+              $("#jido-page-replication .replication-target-token-label p").html 'API token (required)<br/>Length: between 1 and 255 characters'
+              $("#replication-target-token").focus()
+              return
+
+          when 'server'
+            json.replication.replication_targets[0].user = $('#replication-target-user').val() || 'admin'
+            json.replication.replication_targets[0].host = $('#replication-target-host').val()
+            replication_port = $('#replication-target-port').val() || '22'
+            json.replication.replication_targets[0].data = $('#replication-target-data').val() || '/data'
+
+            unless validator.isAlphanumeric(json.replication.replication_targets[0].user)
+              $("#jido-page-replication .replication-target-user-label").parent().addClass 'has-error'
+              $("#jido-page-replication .replication-target-user-label p").html 'Username<br/>Allowed: Alphanumeric'
+              $("#replication-target-user").focus()
+              return
+
+            unless validator.isFQDN(json.replication.replication_targets[0].host, {require_tld: false}) or validator.isIP(json.replication.replication_targets[0].host)
+              $("#jido-page-replication .replication-target-host-label").parent().addClass 'has-error'
+              $("#jido-page-replication .replication-target-host-label p").html 'Hostname/IP (required)<br/>Allowed: FQDN, IPv4, IPv6'
+              $("#replication-target-host").focus()
+              return
+
+            unless validator.isNumeric(replication_port) && replication_port >= 1 && replication_port <= 65535
+              $("#jido-page-replication .replication-target-port-label").parent().addClass 'has-error'
+              $("#jido-page-replication .replication-target-port-label p").html 'SSH port<br/>Number: between 1 and 65535 characters'
+              $("#replication-target-port").focus()
+              return
+
+            # ensure the port is always an Int
+            json.replication.replication_targets[0].port = parseInt(replication_port)
+
+            unless validator.isWhitelisted(json.replication.replication_targets[0].data, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-/")
+              $("#jido-page-replication .replication-target-data-label").parent().addClass 'has-error'
+              $("#jido-page-replication .replication-target-data-label p").html 'Destination dir<br/>Allowed: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-/'
+              $("#replication-target-data").focus()
+              return
+
+    formData = new FormData()
+    encoded = JSON.stringify json
+    blob = new Blob [encoded], {type: 'application/json'}
+    blob.lastModifiedDate = new Date()
+
+    formData.append 'settings', blob, 'settings.json'
+
+    if formData
+      putFile 'replication', '/api/v1/admin/replication', formData, (err, result) ->
+        $('.jido-page-content-replication .jido-panel').show()
+        unless err
+          successUpload 'replication'
+
+          $(".replication-alert").html "Replication will begin shortly."
+          $(".replication-alert").show()
+
+replicationTypeSelectListener = ->
+  $('#replication-type-1').change ->
+    $('#replicationTargetForms').hide()
+    $('#replicationSourceForms').show()
+
+  $('#replication-type-2').change ->
+    $('#replicationSourceForms').hide()
+    $('#replicationTargetForms').show()
+
+targetTypeSelectListener = ->
+  $('#target-type-1').change ->
+    $('#replicationTargetServerForms').hide()
+    $('#replicationTargetApplianceForms').show()
+
+  $('#target-type-2').change ->
+    $('#replicationTargetApplianceForms').hide()
+    $('#replicationTargetServerForms').show()
+
 navbarListener = ->
   $('#jido-page-navbar .navbar-nav li a').click ->
     clicked = $(this).parent().attr 'id'
@@ -634,6 +780,9 @@ monitorButtonListener()
 storageButtonListener()
 storageSelectListener()
 backupButtonListener()
+replicationButtonListener()
+replicationTypeSelectListener()
+targetTypeSelectListener()
 navbarListener()
 
 authenticate (err) ->

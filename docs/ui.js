@@ -8,7 +8,7 @@
 
 (function() {
   'use strict';
-  var apiEndpoints, apiServer, apiType, authenticate, backupButtonListener, capitalize, certsButtonListener, clearToken, debugButtonListener, drawGraphs, failedUpload, fetchData, fetchFile, getHmac, getSha256, getStatus, getToken, loadBackup, loadHome, loadLogin, loadMonitor, loadNetwork, loadReplication, loadSetup, loadStorage, loadSupport, loadToken, loadUpdateCerts, loginButtonListener, logoutButtonListener, logsButtonListener, monitorButtonListener, monitorClick, navbarListener, networkButtonListener, newTokenButtonListener, pollStatus, putFile, putToken, redirectUrl, reloadEndpoints, reloadHealth, restartButtonListener, runningUpload, storageButtonListener, storageSelectListener, successUpload, tokenButtonListener, updateButtonListener, updateCertsButtonListener,
+  var apiEndpoints, apiServer, apiType, authenticate, backupButtonListener, capitalize, certsButtonListener, clearToken, debugButtonListener, drawGraphs, failedUpload, fetchData, fetchFile, getHmac, getSha256, getStatus, getToken, loadBackup, loadHome, loadLogin, loadMonitor, loadNetwork, loadReplication, loadSetup, loadStorage, loadSupport, loadToken, loadUpdateCerts, loginButtonListener, logoutButtonListener, logsButtonListener, monitorButtonListener, monitorClick, navbarListener, networkButtonListener, newTokenButtonListener, pollStatus, putFile, putToken, redirectUrl, reloadEndpoints, reloadHealth, replicationButtonListener, replicationTypeSelectListener, restartButtonListener, runningUpload, storageButtonListener, storageSelectListener, successUpload, targetTypeSelectListener, tokenButtonListener, updateButtonListener, updateCertsButtonListener,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   apiServer = window.location.origin != null ? window.location.origin : window.location.protocol + "//" + window.location.hostname + (window.location.port != null ? ':' + window.location.port : '');
@@ -698,22 +698,57 @@
     $('#jido-button-replication').addClass('active');
     $('#jido-page-navbar').show();
     $('#jido-page-replication').show();
+    reloadHealth();
+    reloadEndpoints();
     fetchData("/api/v1/admin/version", function(err, result) {
       if (!err) {
         return $('.jido-data-platform-version').html(validator.escape(result.version));
       }
     });
     return getStatus("replication", function(result) {
-      if (result.status === "running") {
-        return pollStatus("replication");
-      } else if (result.status === "success") {
-        $('#replicationInfo').show();
-        $('#jido-button-replication-stop').show();
-        $('#jido-page-replication pre.replication-status-filesize').html(validator.escape(result.filesize));
-        return $('#jido-page-replication pre.replication-status-sha256').html(validator.escape(result.sha256));
-      } else {
-        $('#replicationInfo').hide();
-        return $('#jido-button-replication-stop').hide();
+      var replication;
+      if (result.status && result.status === "running") {
+        pollStatus("replication");
+      }
+      if (result.replication) {
+        replication = result.replication;
+        if (result.ssh_fingerprint && result.ssh_pubkey) {
+          $('#replicationInfo').show();
+          if (result.ssh_fingerprint) {
+            $('#jido-page-replication pre.replication-fingerprint').html(validator.escape(result.ssh_fingerprint));
+          }
+          if (result.ssh_pubkey) {
+            $('#jido-page-replication pre.jido-replication-pubkey').html(validator.escape(result.ssh_pubkey));
+          }
+        }
+        if (replication.replication_source_pubkey) {
+          $('#replication-type-1').prop("checked", true);
+          $('#replicationSourceForms').show();
+          $("#replication-source-input").val(validator.escape(replication.replication_source_pubkey));
+        } else if (replication.replication_targets[0]) {
+          $('#replicationTargetForms').show();
+          $('#replication-type-2').prop("checked", true);
+          if (replication.replication_targets[0].token) {
+            $('#replicationTargetApplianceForms').show();
+            $('#target-type-1').prop("checked", true);
+            $("#replication-target-appliance").val(validator.escape(replication.replication_targets[0].host));
+            $("#replication-target-token").val(validator.escape(replication.replication_targets[0].token));
+          } else {
+            $('#replicationTargetServerForms').show();
+            $('#target-type-2').prop("checked", true);
+            $("#replication-target-user").val(validator.escape(replication.replication_targets[0].user));
+            $("#replication-target-host").val(validator.escape(replication.replication_targets[0].host));
+            $("#replication-target-port").val(replication.replication_targets[0].port);
+            $("#replication-target-data").val(replication.replication_targets[0].data);
+          }
+        }
+        if (replication.replication_status === "enabled") {
+          $('#jido-page-replication .replication-status').show();
+          return $('#jido-page-replication .enabledbutton').html("<strong class=\"fa icon-toggle-on text-success\"> enabled</strong>");
+        } else {
+          $('#jido-page-replication .replication-status').show();
+          return $('#jido-page-replication .enabledbutton').html("<strong class=\"fa icon-toggle-off text-danger\"> disabled</strong>");
+        }
       }
     });
   };
@@ -1164,6 +1199,126 @@
     });
   };
 
+  replicationButtonListener = function() {
+    return $('#jido-button-replication-upload').click(function() {
+      var blob, encoded, formData, json, repl1, repl2, replication_port, replication_type, target_type, type1, type2;
+      json = new Object();
+      json.replication = {};
+      json.replication.replication_status = "enabled";
+      repl1 = $('#replication-type-1').is(':checked');
+      repl2 = $('#replication-type-2').is(':checked');
+      replication_type = repl1 === true ? 'source' : 'target';
+      switch (replication_type) {
+        case 'source':
+          json.replication.replication_source_pubkey = $('#replication-source-input').val();
+          if (!(json.replication.replication_source_pubkey && validator.isAscii(json.replication.replication_source_pubkey))) {
+            $("#jido-page-replication .replication-source-label").parent().addClass('has-error');
+            $("#jido-page-replication .replication-source-label p").html('Public SSH key (required)<br/>Allowed: ASCII characters');
+            $("#replication-source-input").focus();
+            return;
+          }
+          break;
+        case 'target':
+          json.replication.replication_targets = [];
+          json.replication.replication_targets[0] = {};
+          type1 = $('#target-type-1').is(':checked');
+          type2 = $('#target-type-2').is(':checked');
+          target_type = type1 === true ? 'appliance' : 'server';
+          switch (target_type) {
+            case 'appliance':
+              json.replication.replication_targets[0].host = $('#replication-target-appliance').val();
+              json.replication.replication_targets[0].token = $('#replication-target-token').val();
+              if (!(validator.isFQDN(json.replication.replication_targets[0].host, {
+                require_tld: false
+              }) || validator.isIP(json.replication.replication_targets[0].host))) {
+                $("#jido-page-replication .replication-target-appliance-label").parent().addClass('has-error');
+                $("#jido-page-replication .replication-target-appliance-label p").html('Hostname/IP (required)<br/>Allowed: FQDN, IPv4, IPv6');
+                $("#replication-target-appliance").focus();
+                return;
+              }
+              if (!(json.replication.replication_targets[0].token.length > 0 && json.replication.replication_targets[0].token.length <= 255)) {
+                $("#jido-page-replication .replication-target-token-label").parent().addClass('has-error');
+                $("#jido-page-replication .replication-target-token-label p").html('API token (required)<br/>Length: between 1 and 255 characters');
+                $("#replication-target-token").focus();
+                return;
+              }
+              break;
+            case 'server':
+              json.replication.replication_targets[0].user = $('#replication-target-user').val() || 'admin';
+              json.replication.replication_targets[0].host = $('#replication-target-host').val();
+              replication_port = $('#replication-target-port').val() || '22';
+              json.replication.replication_targets[0].data = $('#replication-target-data').val() || '/data';
+              if (!validator.isAlphanumeric(json.replication.replication_targets[0].user)) {
+                $("#jido-page-replication .replication-target-user-label").parent().addClass('has-error');
+                $("#jido-page-replication .replication-target-user-label p").html('Username<br/>Allowed: Alphanumeric');
+                $("#replication-target-user").focus();
+                return;
+              }
+              if (!(validator.isFQDN(json.replication.replication_targets[0].host, {
+                require_tld: false
+              }) || validator.isIP(json.replication.replication_targets[0].host))) {
+                $("#jido-page-replication .replication-target-host-label").parent().addClass('has-error');
+                $("#jido-page-replication .replication-target-host-label p").html('Hostname/IP (required)<br/>Allowed: FQDN, IPv4, IPv6');
+                $("#replication-target-host").focus();
+                return;
+              }
+              if (!(validator.isNumeric(replication_port) && replication_port >= 1 && replication_port <= 65535)) {
+                $("#jido-page-replication .replication-target-port-label").parent().addClass('has-error');
+                $("#jido-page-replication .replication-target-port-label p").html('SSH port<br/>Number: between 1 and 65535 characters');
+                $("#replication-target-port").focus();
+                return;
+              }
+              json.replication.replication_targets[0].port = parseInt(replication_port);
+              if (!validator.isWhitelisted(json.replication.replication_targets[0].data, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-/")) {
+                $("#jido-page-replication .replication-target-data-label").parent().addClass('has-error');
+                $("#jido-page-replication .replication-target-data-label p").html('Destination dir<br/>Allowed: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-/');
+                $("#replication-target-data").focus();
+                return;
+              }
+          }
+      }
+      formData = new FormData();
+      encoded = JSON.stringify(json);
+      blob = new Blob([encoded], {
+        type: 'application/json'
+      });
+      blob.lastModifiedDate = new Date();
+      formData.append('settings', blob, 'settings.json');
+      if (formData) {
+        return putFile('replication', '/api/v1/admin/replication', formData, function(err, result) {
+          $('.jido-page-content-replication .jido-panel').show();
+          if (!err) {
+            successUpload('replication');
+            $(".replication-alert").html("Replication will begin shortly.");
+            return $(".replication-alert").show();
+          }
+        });
+      }
+    });
+  };
+
+  replicationTypeSelectListener = function() {
+    $('#replication-type-1').change(function() {
+      $('#replicationTargetForms').hide();
+      return $('#replicationSourceForms').show();
+    });
+    return $('#replication-type-2').change(function() {
+      $('#replicationSourceForms').hide();
+      return $('#replicationTargetForms').show();
+    });
+  };
+
+  targetTypeSelectListener = function() {
+    $('#target-type-1').change(function() {
+      $('#replicationTargetServerForms').hide();
+      return $('#replicationTargetApplianceForms').show();
+    });
+    return $('#target-type-2').change(function() {
+      $('#replicationTargetApplianceForms').hide();
+      return $('#replicationTargetServerForms').show();
+    });
+  };
+
   navbarListener = function() {
     return $('#jido-page-navbar .navbar-nav li a').click(function() {
       var clicked;
@@ -1230,6 +1385,12 @@
   storageSelectListener();
 
   backupButtonListener();
+
+  replicationButtonListener();
+
+  replicationTypeSelectListener();
+
+  targetTypeSelectListener();
 
   navbarListener();
 
