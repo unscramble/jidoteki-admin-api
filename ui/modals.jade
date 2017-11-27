@@ -67,3 +67,87 @@ mixin certModals(title)
         button#jido-button-restart-confirm.btn.btn-danger(type='button', data-dismiss='modal')
           i.fa.icon-ok
           |  Yes, restart it!
+
+#jido-modal-backup-restore.modal(tabindex='-1')
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+        h4.modal-title Restoring a backup
+      .modal-body
+        p The backup archive must be a 
+          code .tar
+          |  file compressed with GNU or BSD tar.
+        p Backup contents will be restored to 
+          code /data
+          |  and will overwrite any existing files.
+      .modal-footer
+        button.btn.btn-default(type='button', data-dismiss='modal') Close
+
+#jido-modal-replication-source.modal(tabindex='-1')
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+        h4.modal-title Replication source
+      .modal-body
+        p Data will be syncronized from a 
+          code source
+          |  appliance into
+          code /data
+        p Enter the
+          code public SSH key
+          |  to be added to 
+          code $HOME/.ssh/authorized_keys
+        .alert.alert-danger
+          p Data written to 
+            strong /data
+            |  may be overwritten during replication sync.
+        .alert.alert-info
+          p The file 
+            strong /opt/jidoteki/admin/etc/jidoteki-read-only.txt
+            |  will be created.
+      .modal-footer
+        button.btn.btn-default(type='button', data-dismiss='modal') Close
+
+#jido-modal-replication-target.modal(tabindex='-1')
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+        h4.modal-title Replication target(s)
+      .modal-body
+        p Data will be syncronized from 
+          code /data
+          |  into the target's destination directory.
+        p Select the type of target server:
+          ul
+            li
+              strong VM Appliance:
+              |  a virtual appliance powered by Jidoteki 
+              em (similar to this one)
+            li
+              strong SSH Server:
+              |  a Linux/UNIX server which accepts SSH 
+              em (requires rsync)
+        .alert.alert-info
+          p Multiple targets may be configured through the API.
+
+        h4 VM Appliance
+        p Enter the hostname/IP address, and API token of the target server.
+        p Replication sync will be automatically created between the two servers.
+        h4 SSH Server
+        p Enter the username
+          em  (default: admin)
+          |  , hostname/IP address, and SSH port 
+          em  (default: 22)
+          |  of the target server. It is also possible to specify 
+        p Enter the destination directory where files will be stored 
+          em (default: /data)
+        .alert.alert-danger
+          p Add the 
+            strong public SSH key
+            |  to the target server's 
+            strong $HOME/.ssh/authorized_keys
+      .modal-footer
+        button.btn.btn-default(type='button', data-dismiss='modal') Close

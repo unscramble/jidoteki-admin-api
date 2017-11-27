@@ -4,9 +4,6 @@
 #
 # Copyright (c) 2015-2017 Alexander Williams, Unscramble <license@unscramble.jp>
 
-[de version-number ()
-  (in (list 'cat (pack *Admin_path "etc/version.txt")) (pack (till "^J") ]
-
 [de api-request-get ()
   (if (version-number)
       (response-json (encode (list (cons "version" @))))

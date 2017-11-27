@@ -4,7 +4,8 @@
 #
 # Copyright (c) 2015-2017 Alexander Williams, Unscramble <license@unscramble.jp>
 
-(de api-request-get ()
-  (response-json-async "reboot") )
+[de version-number ()
+  (in (pack *Admin_path "etc/version.txt") (till NIL T) ]
 
-(check-auth "GET")
+[de version-html ()
+  (str-escape (version-number) ]

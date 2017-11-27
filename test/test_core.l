@@ -60,6 +60,48 @@
   (let *Url "api/v1/admin/version/index.l"
     (validate-hash "39791be66bfbce4966b6c3feb7bfcb9118c285fa952b030a9af2fcf64f1a67ac") ]
 
+[de test-token-request ()
+  (let *Url "api/v1/admin/version/index.l"
+    (validate-token "testtoken") ]
+
+[de test-cookie-request ()
+  (let *Url "api/v1/admin/version/index.l"
+    (validate-cookie "ada63e98fe50eccb55036d88eda4b2c3709f53c2b65bc0335797067e9a2a5d8b") ]
+
+[de test-validate-auth-token ()
+  (let (*Url "api/v1/admin/version/index.l"
+        *AUTH_TOKEN "testtoken" )
+    (validate-auth) ]
+
+[de test-validate-auth-cookie ()
+  (let (*Url "api/v1/admin/version/index.l"
+        *AUTH_COOKIE "ada63e98fe50eccb55036d88eda4b2c3709f53c2b65bc0335797067e9a2a5d8b" )
+    (validate-auth) ]
+
+[de test-validate-auth-hash ()
+  (let (*Url "api/v1/admin/version/index.l"
+        *AUTH_HASH "39791be66bfbce4966b6c3feb7bfcb9118c285fa952b030a9af2fcf64f1a67ac" )
+    (validate-auth) ]
+
+[de test-validate-noauth-token ()
+  (let (*Url "api/v1/admin/version/index.l"
+        *AUTH_TOKEN "invalid" )
+    (validate-auth) ]
+
+[de test-validate-noauth-cookie ()
+  (let (*Url "api/v1/admin/version/index.l"
+        *AUTH_COOKIE "ada63e98fe50eccb55036d88eda4b2c3709f53c2b65bc0335797067e9a2a5d8x" )
+    (validate-auth) ]
+
+[de test-validate-noauth-hash ()
+  (let (*Url "api/v1/admin/version/index.l"
+        *AUTH_HASH "39791be66bfbce4966b6c3feb7bfcb9118c285fa952b030a9af2fcf64f1a67ax" )
+    (validate-auth) ]
+
+[de test-validate-noauth ()
+  (let *Url "api/v1/admin/version/index.l"
+    (validate-auth) ]
+
 [de test-invalid-token ()
   (pipe
     (update-token (char 168))
@@ -123,6 +165,15 @@
   '(assert-t      (test-json-string) "Ensure JSON string is validated")
   '(assert-t      (test-response-json) "Ensure a generic HTTP response is returned")
   '(assert-t      (test-hmac-request) "Ensure HMAC gets validated")
+  '(assert-t      (test-token-request) "Ensure Token gets validated")
+  '(assert-t      (test-cookie-request) "Ensure Cookie gets validated")
+  '(assert-t      (test-validate-auth-token) "Ensure Auth token header gets validated")
+  '(assert-t      (test-validate-auth-cookie) "Ensure Auth cookie header gets validated")
+  '(assert-t      (test-validate-auth-hash) "Ensure Auth hash header gets validated")
+  '(assert-nil    (test-validate-noauth-token) "Ensure Auth token header doesn't get validated")
+  '(assert-nil    (test-validate-noauth-cookie) "Ensure Auth cookie header doesn't get validated")
+  '(assert-nil    (test-validate-noauth-hash) "Ensure Auth hash header doesn't get validated")
+  '(assert-nil    (test-validate-noauth) "Ensure Auth doesn't get validated")
   '(assert-t      (test-invalid-token) "Ensure invalid characters (non-printable) are not accepted")
   '(assert-nil    (test-validate-string-printable) "Ensure printable characters are accepted")
   '(assert-nil    (test-validate-string-alphanumeric) "Ensure alphanumeric characters are accepted")

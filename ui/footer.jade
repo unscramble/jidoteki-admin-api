@@ -4,27 +4,27 @@
 //- 
 //- Copyright (c) 2015-2017 Alexander Williams, Unscramble <license@unscramble.jp>
 
-script(src='docs/jquery/jquery.min.js')
-script(src='docs/forge/forge.min.js')
-script(src='docs/validator/validator.min.js')
-script(src='docs/themes/bootstrap.min.js')
+script(src="/docs/jquery/jquery.min.js?v=#{appVersion}")
+script(src="/docs/forge/forge.min.js?v=#{appVersion}")
+script(src="/docs/validator/validator.min.js?v=#{appVersion}")
+script(src="/docs/themes/bootstrap.min.js?v=#{appVersion}")
 
 //- Load jsrrdgraph files
-script(src='docs/jsrrdgraph/binaryxhr.js')
-script(src='docs/jsrrdgraph/rrdcmdline.js')
-script(src='docs/jsrrdgraph/rrddatafile.js')
-script(src='docs/jsrrdgraph/rrdfile.js')
-script(src='docs/jsrrdgraph/rrdgfxcanvas.js')
-script(src='docs/jsrrdgraph/rrdgraph.min.js')
-script(src='docs/jsrrdgraph/rrdrpn.js')
-script(src='docs/jsrrdgraph/rrdtime.js')
-script(src='docs/jsrrdgraph/sprintf.js')
-script(src='docs/jsrrdgraph/strftime.js')
-script(src='docs/jsrrdgraph/draw.js')
+script(src="/docs/jsrrdgraph/binaryxhr.js?v=#{appVersion}")
+script(src="/docs/jsrrdgraph/rrdcmdline.js?v=#{appVersion}")
+script(src="/docs/jsrrdgraph/rrddatafile.js?v=#{appVersion}")
+script(src="/docs/jsrrdgraph/rrdfile.js?v=#{appVersion}")
+script(src="/docs/jsrrdgraph/rrdgfxcanvas.js?v=#{appVersion}")
+script(src="/docs/jsrrdgraph/rrdgraph.min.js?v=#{appVersion}")
+script(src="/docs/jsrrdgraph/rrdrpn.js?v=#{appVersion}")
+script(src="/docs/jsrrdgraph/rrdtime.js?v=#{appVersion}")
+script(src="/docs/jsrrdgraph/sprintf.js?v=#{appVersion}")
+script(src="/docs/jsrrdgraph/strftime.js?v=#{appVersion}")
+script(src="/docs/jsrrdgraph/draw.js?v=#{appVersion}")
 
 //- Always load the UI last
-script(src='docs/ui.min.js')
+script(src="/docs/ui.min.js?v=#{appVersion}")
 
 .well.text-right.text-muted.jido-smalltext(style='margin-bottom:0;margin-top:3em;position:relative;bottom:0px;width:100%;')
-  | Powered by Jidoteki.com - v1.18.3 - 
+  | Powered by Jidoteki.com - v#{appVersion} - 
   a(href='/docs/NOTICE.TXT') Copyright notices

@@ -1,5 +1,7 @@
 # Changelog
 
+## 1.19.0 (TBD)
+
 ## 1.18.3 (2017-11-16)
 
   ### Minor fixes
@@ -17,6 +19,7 @@
 
   ### Minor fixes
 
+  * [api] Refactor generic API functions
   * [dashboard] Ensure `Backup/Restore` section displays the alert and status panel when needed
   * [dashboard] Set `autocomplete=off` on login/token page, instead of `autocomplete=false`
 

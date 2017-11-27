@@ -1,0 +1,105 @@
+//- This Source Code Form is subject to the terms of the Mozilla Public
+//- License, v. 2.0. If a copy of the MPL was not distributed with this
+//- file, You can obtain one at http://mozilla.org/MPL/2.0/.
+//- 
+//- Copyright (c) 2015-2017 Alexander Williams, Unscramble <license@unscramble.jp>
+
+// #replication container
+
+- sectionName = "replication"
+- sectionTitle = "Replication"
+- sectionExtra = "settings"
+
+mixin applianceForms()
+  div(id="#{sectionName}TargetApplianceForms", style='display:none;')
+    .form-group.text-success
+      label.control-label.replication-target-appliance-label(for='replication-target-appliance')
+        p Hostname/IP
+      input#replication-target-appliance.form-control(placeholder='Hostname/IP', name='replication-target-appliance', type='text')
+    .form-group.text-success
+      label.control-label.replication-target-token-label(for='replication-target-token')
+        p API token
+      input#replication-target-token.form-control(placeholder='API token', name='replication-target-token', type='password')
+
+mixin serverForms()
+  div(id="#{sectionName}TargetServerForms", style='display:none;')
+    .form-group
+      label.control-label.replication-target-user-label(for='replication-target-user')
+        p Username
+      input#replication-target-user.form-control(placeholder='Username', name='replication-target-user', type='text')
+    .form-group.text-success
+      label.control-label.replication-target-host-label(for='replication-target-host')
+        p Hostname/IP
+      input#replication-target-host.form-control(placeholder='Hostname/IP', name='replication-target-host', type='text')
+    .form-group
+      label.control-label.replication-target-port-label(for='replication-target-port')
+        p SSH port
+      input#replication-target-port.form-control(placeholder='SSH port', name='replication-target-port', type='text')
+    .form-group
+      label.control-label.replication-target-data-label(for='replication-target-data')
+        p Destination dir
+      input#replication-target-data.form-control(placeholder='Destination dir', name='replication-target-data', type='text')
+
+mixin sectionMain
+  .panel-body
+    h4 Configure Replication settings to sync data between multiple servers.
+
+    .row
+      form(role='form', class="#{sectionName}-form", autocomplete='off')
+        fieldset
+          .col-lg-12.col-md-12.col-sm-12
+            .form-group.replication-status(style='display:none;')
+              label.control-label(for='replication-status-toggle')
+                p Replication status
+                a#replication-status-toggle.btn.btn-lg.enabledbutton(href="#", style='padding:0;margin-bottom:5px;', onclick="event.preventDefault()")
+
+            .form-group
+              p
+                strong Replication type
+              label.radio-inline.control-label(for='replication-type-1')
+                input#replication-type-1(name='replication-type-radio', value='source', type='radio')
+                | Source
+                a(href='#', data-toggle='modal', data-target='#jido-modal-replication-source')
+                  i.fa.icon-info-circled
+              label.radio-inline.control-label(for='replication-type-2')
+                input#replication-type-2(name='replication-type-radio', value='target', type='radio')
+                | Target
+                a(href='#', data-toggle='modal', data-target='#jido-modal-replication-target')
+                  i.fa.icon-info-circled
+
+            div(id="#{sectionName}SourceForms", style='display:none;')
+              .form-group.text-success
+                label.control-label.replication-source-label(for='replication-source-input')
+                  p Public SSH key
+                input#replication-source-input.form-control(placeholder='Public SSH key', name='replication-source-pubkey', type='text')
+
+            div(id="#{sectionName}TargetForms", style='display:none;')
+              .form-group
+                p
+                  strong Type
+                label.radio-inline.control-label(for='target-type-1')
+                  input#target-type-1(name='target-type-radio', value='appliance', type='radio')
+                  | VM Appliance
+                label.radio-inline.control-label(for='target-type-2')
+                  input#target-type-2(name='target-type-radio', value='server', type='radio')
+                  | SSH Server
+
+              +applianceForms()
+              +serverForms()
+
+            .form-group
+              br
+              input.btn.btn-lg.btn-primary.btn-block(id="jido-button-#{sectionName}-upload", type='submit', value='Save', onclick='return event.preventDefault();')
+
+mixin sectionInfo
+  .panel-body(id="#{sectionName}Info", style='display:none;')
+    h4 SSH key fingerprint
+    p
+      pre.replication-fingerprint
+    h4 Public SSH key
+    p
+      pre.jido-replication-pubkey
+
++sectionHeader(sectionName, sectionTitle)
+
+// /#replication container

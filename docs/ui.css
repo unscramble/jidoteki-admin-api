@@ -16,6 +16,7 @@
 .jido-data-update-log,
 .jido-data-network-log,
 .jido-data-certs-log { white-space:pre; overflow-x:auto; word-wrap: normal;}
+.jido-replication-pubkey { white-space:pre-wrap; overflow-x:auto; word-wrap: normal;}
 .jido-button-fulllog { display: block;}
 .jido-data-network-info li span { font-weight: normal;}
 .jido-monitor { padding: 10px; margin: 0; background-color: #F2F2F2; text-align: center;}

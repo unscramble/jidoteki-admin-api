@@ -13,7 +13,7 @@
             (prinl (pack (car N) "=\"" (cdr N) "\"")))
             (cdr (assoc "storage" Settings)) ) )
 
-  (response-async "storage") ]
+  (response-json-async "storage") ]
 
 [de storage-validate-nfs (Mount_options Ip Share)
   (or (validate-string-range Mount_options 'mount_options (pack *Ascii_codes_fqdn "=,") *Range_fqdn)
@@ -80,7 +80,3 @@
   (response-json-nocache (storage-options)) )
 
 (check-auth)
-
-(if *Post
-    (api-request-post)
-    (api-request-get) ]

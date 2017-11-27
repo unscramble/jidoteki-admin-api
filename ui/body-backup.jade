@@ -5,66 +5,48 @@
 //- Copyright (c) 2015-2017 Alexander Williams, Unscramble <license@unscramble.jp>
 
 // #backup container
-#jido-page-backup.container-fluid.jido-page-content.jido-page-content-backup(style='display:none')
-  .row
-    .col-lg-10.col-md-10.col-sm-12.col-lg-offset-1.col-md-offset-1
-      h1.page-header Backup/Restore
-  .row
-    .col-lg-10.col-md-10.col-sm-12.col-lg-offset-1.col-md-offset-1
-      .panel.panel-default.jido-panel(style='display:none;')
-        .panel-heading
-          h4 Status: 
-            span.label.label-default.jido-data-backup-status ...waiting for backup
-          .progress(style='display:none; margin-top: 20px')
-            .progress-bar.progress-bar-striped.active(role='progressbar', aria-valuenow='33', aria-valuemin='0', aria-valuemax='100', style='width: 33%')
-              | ...uploading, please wait
-          .alert.alert-dismissible.alert-success(style='display:none;', class="backup-alert")
+- sectionName = "backup";
+- sectionTitle = "Backup/Restore";
+- sectionExtra = "action"
 
-  .row
-    .col-lg-4.col-md-4.col-sm-12.col-lg-offset-1.col-md-offset-1
-      .panel.panel-default.jido-panel
-        .panel-heading
-          h3.panel-title
-            i.fa.icon-floppy
-            |  Backup action
-        .panel-body
-          h4 Create, cancel, download, or restore a Backup archive.
-          br
-          form.backup-form(role='form')
-            fieldset
-              .form-group
-                .row
-                  .col-lg-6.col-md-6.col-sm-12
-                    a#jido-button-backup-start.btn.btn-lg.btn-primary.btn-block(href='#', onclick='return event.preventDefault();') Start backup
-                  .col-lg-6.col-md-6.col-sm-12
-                    a#jido-button-backup-stop.btn.btn-lg.btn-danger.btn-block(href='#', onclick='return event.preventDefault();', style='display:none;') Cancel backup
-              hr
-              .form-group
-                .alert.alert-info
-                  | Restore will overwrite files in <code>/data</code>
-                label.control-label(for='backup-restore-file')
-                  | Restore a backup
-                input#backup-restore-input.form-control(placeholder='backup.tar', name='backup_file', type='file')
-              input#jido-button-backup-upload.btn.btn-lg.btn-primary.btn-block(type='submit', value='Restore backup', onclick='return event.preventDefault();')
+mixin sectionMain
+  .panel-body
+    h4 Create, cancel, download, or restore a Backup archive.
+    br
+    form(role='form', class="#{sectionName}-form")
+      fieldset
+        .form-group
+          .row
+            .col-lg-6.col-md-6.col-sm-12
+              a#jido-button-backup-start.btn.btn-lg.btn-primary.btn-block(href='#', onclick='return event.preventDefault();') Start backup
+            .col-lg-6.col-md-6.col-sm-12
+              a#jido-button-backup-stop.btn.btn-lg.btn-danger.btn-block(href='#', onclick='return event.preventDefault();', style='display:none;') Cancel backup
+        hr
+        .form-group
+          .alert.alert-info
+            | Restore will overwrite files in <code>/data</code>
+          label.control-label(for='backup-restore-file')
+            | Restore a backup 
+            a(href='#', data-toggle='modal', data-target='#jido-modal-backup-restore')
+              i.fa.icon-info-circled
+          input#backup-restore-input.form-control(placeholder='backup.tar', name='backup_file', type='file')
+        input.btn.btn-lg.btn-primary.btn-block(id="jido-button-#{sectionName}-upload", type='submit', value='Restore backup', onclick='return event.preventDefault();')
 
-    .col-lg-6.col-md-6.col-sm-12
-      .panel.panel-default.jido-panel
-        .panel-heading
-          h3.panel-title
-            i.fa.icon-info-circled
-            |  Information
-        .panel-body#backupInfo(style='display:none;')
-          h4 Download
-          .list-group
-            a#jido-data-backup-file.list-group-item(href='#')
-              h4.list-group-item-heading
-                i.fa.icon-file-archive
-                |  Backup files (backup.tar)
-          h4 Filesize
-          p
-            pre.backup-status-filesize
-          h4 SHA256 hash
-          p
-            pre.backup-status-sha256
+mixin sectionInfo
+  .panel-body(id="#{sectionName}Info", style='display:none;')
+    h4 Download
+    .list-group
+      a#jido-data-backup-file.list-group-item(href='#')
+        h4.list-group-item-heading
+          i.fa.icon-file-archive
+          |  Backup files (backup.tar)
+    h4 Filesize
+    p
+      pre.backup-status-filesize
+    h4 SHA256 hash
+    p
+      pre.backup-status-sha256
+
++sectionHeader(sectionName, sectionTitle)
 
 // /#backup container

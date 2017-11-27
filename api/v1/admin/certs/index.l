@@ -40,11 +40,7 @@
         (or (certs-store (tmp Public) "public_key")
             (certs-store (tmp Private) "private_key")
             (when Ca (certs-store (tmp Ca) "ca_key"))
-            (response-async "certs") )
+            (response-json-async "certs") )
         (http-msg 400) ]
 
 (check-auth)
-
-(if *Post
-    (api-request-post)
-    (api-request-get) ]

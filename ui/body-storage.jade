@@ -4,6 +4,10 @@
 //- 
 //- Copyright (c) 2015-2016 Alexander Williams, Unscramble <license@unscramble.jp>
 
+- sectionName = "storage";
+- sectionTitle = "Storage";
+- sectionExtra = "settings"
+
 mixin getNFS()
   #storage-nfs.storage-form-options(style='display:none;')
     .form-group
@@ -104,58 +108,37 @@ mixin helpNBD()
     p NBD provides a network block device by connecting to an NBD server over TCP.
 
 // #storage container
-#jido-page-storage.container-fluid.jido-page-content.jido-page-content-storage(style='display:none')
-  .row
-    .col-lg-10.col-md-10.col-sm-12.col-lg-offset-1.col-md-offset-1
-      h1.page-header Storage
-  .row
-    .col-lg-10.col-md-10.col-sm-12.col-lg-offset-1.col-md-offset-1
-      .panel.panel-default.jido-panel(style='display:none;')
-        .panel-heading
-          .progress(style='margin-top: 20px')
-            .progress-bar.progress-bar-striped.active(role='progressbar', aria-valuenow='33', aria-valuemin='0', aria-valuemax='100', style='width: 33%')
-              | ...uploading, please wait
-          .alert.alert-dismissible.alert-success.storage-alert(style='display:none;')
-  .row
-    .col-lg-4.col-md-4.col-sm-12.col-lg-offset-1.col-md-offset-1
-      .panel.panel-default.jido-panel
-        .panel-heading
-          h3.panel-title
-            i.fa.icon-database
-            |  Storage settings
-        .panel-body
-          h4 Select Storage type and configure Settings for persistent data.
-          br
-          .alert.alert-info
-            | All form fields are required
-          .row
-            form.storage-form(role='form', autocomplete='off')
-              fieldset
-                .col-lg-12.col-md-12.col-sm-12
-                  .form-group
-                    label.control-label.storage-type-label(for='type-input')
-                      | Storage type
-                    select#storage-name-select.form-control(tabindex='21')
-                  div#storageForms
-                    mixin getNFS()
-                    mixin getAOE()
-                    mixin getISCSI()
-                    mixin getNBD()
-                  .form-group
-                    br
-                    input#jido-button-storage-upload.btn.btn-lg.btn-primary.btn-block(type='submit', value='Update', onclick='return event.preventDefault();')
+mixin sectionMain
+  .panel-body
+    h4 Select Storage type and configure Settings for persistent data.
+    br
+    .alert.alert-info
+      | All form fields are required
+    .row
+      form(role='form', class="#{sectionName}-form")
+        fieldset
+          .col-lg-12.col-md-12.col-sm-12
+            .form-group
+              label.control-label.storage-type-label(for='type-input')
+                | Storage type
+              select#storage-name-select.form-control(tabindex='21')
+            div(id="#{sectionName}Forms")
+              mixin getNFS()
+              mixin getAOE()
+              mixin getISCSI()
+              mixin getNBD()
+            .form-group
+              br
+              input.btn.btn-lg.btn-primary.btn-block(id="jido-button-#{sectionName}-upload", type='submit', value='Update', onclick='return event.preventDefault();')
 
-    .col-lg-6.col-md-6.col-sm-12
-      .panel.panel-default.jido-panel
-        .panel-heading
-          h3.panel-title
-            i.fa.icon-info-circled
-            |  Information
-        .panel-body#storageHelp
-          mixin helpLOCAL()
-          mixin helpNFS()
-          mixin helpAOE()
-          mixin helpISCSI()
-          mixin helpNBD()
+mixin sectionInfo
+  .panel-body(id="#{sectionName}Help")
+    mixin helpLOCAL()
+    mixin helpNFS()
+    mixin helpAOE()
+    mixin helpISCSI()
+    mixin helpNBD()
+
++sectionHeader(sectionName, sectionTitle)
 
 // /#storage container

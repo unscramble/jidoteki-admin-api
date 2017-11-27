@@ -29,13 +29,9 @@
 
 (de api-request-file (File)
   (call 'mv "-f" File (pack *Upload_path "software_package-zzz.enc"))
-  (response-async "update") )
+  (response-json-async "update") )
 
 [de api-request-post ()
   (http-file 'update) ]
 
 (check-auth)
-
-(if *Post
-    (api-request-post)
-    (api-request-get) ]

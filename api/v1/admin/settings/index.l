@@ -4,12 +4,6 @@
 #
 # Copyright (c) 2015-2017 Alexander Williams, Unscramble <license@unscramble.jp>
 
-[de settings-fetch ()
-  (let (App     (decode (pack *Admin_path "etc/app.json") T)
-        Network (decode (pack *Admin_path "etc/network.json") T) )
-
-    (list (append '("network") Network) (append '("app") App)) ]
-
 (de settings-static (Interface Ip_address Netmask Gateway Dns1 Dns2 Hostname Ntpserver)
   (out (pack *Upload_path "network.conf")
     (prinl "mode=static")
@@ -22,7 +16,7 @@
     (prin "dns=\"") (when Dns1 (prin @)) (when Dns2 (prin " " @)) (prinl "\"")
     (prin "hostname=\"") (when Hostname (prin @)) (prinl "\"")
     (prin "ntpserver=\"") (when Ntpserver (prin @)) (prinl "\"") )
-  (response-async "settings" "static") )
+  (response-json-async "settings" "static") )
 
 (de settings-dhcp (Interface Hostname)
   (out (pack *Upload_path "network.conf")
@@ -32,7 +26,7 @@
         (prinl "interface=eth0") )
     (prin "hostname=\"") (when Hostname (prin @)) (prinl "\"")
     (prin "ntpserver=\"") (when Ntpserver (prin @)) (prinl "\"") )
-  (response-async "settings" "dhcp") )
+  (response-json-async "settings" "dhcp") )
 
 [de settings-store (Settings)
   (let (App     (cdr (assoc "app" Settings))
@@ -82,7 +76,3 @@
   (response-json (encode (settings-fetch))) )
 
 (check-auth)
-
-(if *Post
-    (api-request-post)
-    (api-request-get) ]

@@ -5,6 +5,6 @@
 # Copyright (c) 2015-2017 Alexander Williams, Unscramble <license@unscramble.jp>
 
 (de api-request-get ()
-  (response-json-async "reboot") )
+  (log-plaintext "update_replication.log") )
 
 (check-auth "GET")

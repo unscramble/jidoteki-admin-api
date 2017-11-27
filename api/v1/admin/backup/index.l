@@ -9,7 +9,7 @@
 
 [de backup-post-action (Action)
   (if (or (= 'START Action) (= 'STOP Action))
-      (response-async "backup" Action)
+      (response-json-async "backup" Action)
       (http-msg 400 "Missing or invalid option: action. Expected value 'START' or 'STOP'") ]
 
 [de api-request-post ()
@@ -17,7 +17,3 @@
     (backup-post-action Action) ]
 
 (check-auth)
-
-(if *Post
-    (api-request-post)
-    (api-request-get) ]
