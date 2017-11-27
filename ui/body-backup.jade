@@ -26,7 +26,9 @@ mixin sectionMain
           .alert.alert-info
             | Restore will overwrite files in <code>/data</code>
           label.control-label(for='backup-restore-file')
-            | Restore a backup
+            | Restore a backup 
+            a(href='#', data-toggle='modal', data-target='#jido-modal-backup-restore')
+              i.fa.icon-info-circled
           input#backup-restore-input.form-control(placeholder='backup.tar', name='backup_file', type='file')
         input.btn.btn-lg.btn-primary.btn-block(id="jido-button-#{sectionName}-upload", type='submit', value='Restore backup', onclick='return event.preventDefault();')
 

@@ -67,3 +67,19 @@ mixin certModals(title)
         button#jido-button-restart-confirm.btn.btn-danger(type='button', data-dismiss='modal')
           i.fa.icon-ok
           |  Yes, restart it!
+
+#jido-modal-backup-restore.modal(tabindex='-1')
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+        h4.modal-title Restoring a backup
+      .modal-body
+        p The backup archive must be a 
+          code .tar
+          |  file compressed with GNU or BSD tar.
+        p Backup contents will be restored to 
+          code /data
+          |  and will overwrite any existing files.
+      .modal-footer
+        button.btn.btn-default(type='button', data-dismiss='modal') Close
