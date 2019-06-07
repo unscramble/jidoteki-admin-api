@@ -8,7 +8,7 @@
 
 (function() {
   'use strict';
-  var apiEndpoints, apiServer, apiType, authenticate, backupButtonListener, capitalize, certsButtonListener, clearToken, debugButtonListener, dhcpStaticListener, drawGraphs, failedUpload, fetchData, fetchFile, getHmac, getSha256, getStatus, getToken, loadBackup, loadHome, loadLogin, loadMonitor, loadNetwork, loadSetup, loadStorage, loadSupport, loadToken, loadUpdateCerts, loginButtonListener, logoutButtonListener, logsButtonListener, monitorButtonListener, monitorClick, navbarListener, networkButtonListener, newTokenButtonListener, pollStatus, putFile, putToken, redirectUrl, reloadEndpoints, reloadHealth, restartButtonListener, runningUpload, storageButtonListener, storageSelectListener, successUpload, tokenButtonListener, updateButtonListener, updateCertsButtonListener,
+  var apiEndpoints, apiServer, apiType, authenticate, backupButtonListener, capitalize, certsButtonListener, clearToken, debugButtonListener, dhcpStaticListener, drawGraphs, failedUpload, fetchData, fetchDataParams, fetchFile, fetchFileParams, getHmac, getSha256, getStatus, getToken, loadBackup, loadHome, loadLogin, loadMonitor, loadNetwork, loadSetup, loadStorage, loadSupport, loadToken, loadUpdateCerts, logFilesListener, loginButtonListener, logoutButtonListener, logsButtonListener, monitorButtonListener, monitorClick, navbarListener, networkButtonListener, newTokenButtonListener, pollStatus, putFile, putToken, redirectUrl, reloadEndpoints, reloadHealth, restartButtonListener, runningUpload, storageButtonListener, storageSelectListener, successUpload, tokenButtonListener, updateButtonListener, updateCertsButtonListener,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   apiServer = window.location.origin != null ? window.location.origin : window.location.protocol + "//" + window.location.hostname + (window.location.port != null ? ':' + window.location.port : '');
@@ -71,12 +71,38 @@
     }
   };
 
+  fetchDataParams = function(endpoint, params, callback) {
+    var hmac, sha256;
+    sha256 = getToken();
+    if (sha256 != null) {
+      hmac = getHmac("GET" + endpoint, sha256);
+      return $.get("" + apiServer + endpoint + "?hash=" + hmac + params).done(function(response) {
+        return callback(null, response);
+      }).fail(function(err) {
+        return callback(new Error(err));
+      });
+    } else {
+      return callback(new Error("Missing or invalid API token"));
+    }
+  };
+
   fetchFile = function(endpoint, callback) {
     var hmac, sha256;
     sha256 = getToken();
     if (sha256 != null) {
       hmac = getHmac("GET" + endpoint, sha256);
       return $(location).attr('href', "" + apiServer + endpoint + "?hash=" + hmac);
+    } else {
+      return callback(new Error("Missing or invalid API token"));
+    }
+  };
+
+  fetchFileParams = function(endpoint, params, callback) {
+    var hmac, sha256;
+    sha256 = getToken();
+    if (sha256 != null) {
+      hmac = getHmac("GET" + endpoint, sha256);
+      return $(location).attr('href', "" + apiServer + endpoint + "?hash=" + hmac + params);
     } else {
       return callback(new Error("Missing or invalid API token"));
     }
@@ -650,7 +676,28 @@
     $('#jido-page-support').show();
     return fetchData("/api/v1/admin/version", function(err, result) {
       if (!err) {
-        return $('.jido-data-platform-version').html(validator.escape(result.version));
+        return fetchData("/api/v1/admin/logfiles", function(err, result2) {
+          var fileSize, i, key, len, logFiles, ref, value;
+          if (!err) {
+            $('.jido-data-platform-version').html(validator.escape(result.version));
+            logFiles = "";
+            ref = result2.logfiles;
+            for (key = i = 0, len = ref.length; i < len; key = ++i) {
+              value = ref[key];
+              fileSize = (function() {
+                switch (false) {
+                  case !(value.size < 1024):
+                    return value.size + "B";
+                  default:
+                    return (Math.round(value.size / 1024)) + "KB";
+                }
+              })();
+              logFiles = logFiles + ("<a class=\"list-group-item logfile-select\" data-text=\"" + value.name + "\" href=\"#log-viewer\"><i class=\"fa icon-doc-text\"></i> " + value.name + " (" + fileSize + ") <i class=\"fa icon-right-circled text-info pull-right\"></i></a>");
+            }
+            $('.jido-data-logfiles').html(logFiles);
+            return logFilesListener();
+          }
+        });
       }
     });
   };
@@ -1156,6 +1203,40 @@
       $('#ip_address-input').prop('disabled', false);
       $('#netmask-input').prop('disabled', false);
       return $('#gateway-input').prop('disabled', false);
+    });
+  };
+
+  logFilesListener = function() {
+    $(".logfile-select").click(function() {
+      var msg;
+      msg = $(this).attr('data-text');
+      return fetchDataParams("/api/v1/admin/logfiles/log", "&filename=" + msg + "&lines=10", function(err, result) {
+        if (!err) {
+          $("#jido-data-logfiles-log-viewer span.title").html(" " + msg + " (last 10 lines)");
+          $("#jido-data-logfiles-file-full span.title").html(" Show full " + msg);
+          $("#jido-data-logfiles-file-full").attr('data-text', msg);
+          $("#jido-data-logfiles-file-download span.title").html(" Download " + msg);
+          $("#jido-data-logfiles-file-download").attr('data-text', msg);
+          $("#jido-data-logfiles-file-full").show();
+          $("#jido-data-logfiles-file-download").show();
+          return $(".jido-data-logfiles-log").html(result ? validator.escape(result) : "No log file found");
+        }
+      });
+    });
+    $("#jido-data-logfiles-file-full").click(function() {
+      var msg;
+      msg = $(this).attr('data-text');
+      return fetchDataParams("/api/v1/admin/logfiles/log", "&filename=" + msg, function(err, result) {
+        if (!err) {
+          $("#jido-data-logfiles-log-viewer span.title").html(" " + msg + " (full log)");
+          return $(".jido-data-logfiles-log").html(result ? validator.escape(result) : "No log file found");
+        }
+      });
+    });
+    return $("#jido-data-logfiles-file-download").click(function() {
+      var msg;
+      msg = $(this).attr('data-text');
+      return fetchFileParams("/api/v1/admin/logfiles/download", "&filename=" + msg, function(err, result) {});
     });
   };
 

@@ -17,7 +17,7 @@
     (list (append '("status") Status) (append '("log") Log) ]
 
 (de api-request-get ()
-  (response-json (encode (certs-process))) )
+  (response-json (json-encode (certs-process))) )
 
 (de certs-store (File Type)
   (let Filename

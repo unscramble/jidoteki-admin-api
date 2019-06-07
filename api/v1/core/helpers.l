@@ -27,7 +27,7 @@
 
 [de http-error (Code Error)
   (response-json-generic
-    (encode (list (cons "Status" (pack Code " " (http-code Code))) (cons "Error-Message" Error)))
+    (json-encode (list (cons "Status" (pack Code " " (http-code Code))) (cons "Error-Message" Error)))
     Code
     NIL
     (list (cons "Content-Type" "application/json") (cons "Error-Message" Error)) ]
@@ -35,7 +35,7 @@
 (de http-msg (Code Error)
   (if Error
       (http-error Code Error)
-      (response-json [encode (list (cons "Status" (pack Code " " (http-code Code)] Code) ) )
+      (response-json [json-encode (list (cons "Status" (pack Code " " (http-code Code)] Code) ) )
 
 [de json-file (Json)
   (if (info Json)
@@ -75,7 +75,7 @@
       (exec 'nohup (pack *Admin_path "bin/wrapper.sh") Action) )
 
     (use Size Date Body
-      (json-string [encode (list (cons "Status" (pack 202 " " (http-code 202))) Location])
+      (json-string [json-encode (list (cons "Status" (pack 202 " " (http-code 202))) Location])
       (response-generic 202 Size Date Body (list Location '("Content-Type" . "application/json")))
       (audit-log "web" "admin" (pack Endpoint ".post") Action) ]
 
@@ -128,8 +128,11 @@
     (prinl "Content-Security-Policy: object-src 'self';") )
 
 # API endpoint helpers
+[de log-pathformater (Path)
+  (pack Path (unless (= "/" (last Path)) "/")) ]
+
 [de log-plaintext (Filename)
-  (response-json-generic (pack *Admin_path "log/" Filename) 200 T '(("Content-Type" . "text/plain") ("Cache-Control" . "no-cache") ]
+  (response-json-generic Filename 200 T '(("Content-Type" . "text/plain") ("Cache-Control" . "no-cache") ]
 
 [de http-file (Type)
   (let (Data (get Type 'http)

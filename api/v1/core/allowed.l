@@ -17,15 +17,16 @@
       "changelog"
       "build"
       "health"
-      "endpoints" ) )
+      "endpoints"
+      "logfiles" ) )
 
   # default actions
-  "index.html" "v" "newtoken" "token" "hash" "update" "settings" )
+  "index.html" "v" "newtoken" "token" "hash" "update" "settings" "filename" "lines" )
 
 (allow "docs" T)
 
 (when (info "/usr/local/etc/jidoteki-admin-api.json")
-      (setq *Api_config (decode "/usr/local/etc/jidoteki-admin-api.json" T)) )
+      (setq *Api_config (json-decode "/usr/local/etc/jidoteki-admin-api.json" T)) )
 
 # optional api endpoints
 (mapcar '((N) (allow (pack *API_PATH "/admin/" N) T)) (cddr (assoc "endpoints" *Api_config)))

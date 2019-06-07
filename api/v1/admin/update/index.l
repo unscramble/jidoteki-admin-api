@@ -10,7 +10,7 @@
 [de update-status ()
   (let Jsonfile (pack *Admin_path "etc/status_update.json")
     (if (info Jsonfile)
-        (chain (decode Jsonfile T))
+        (chain (json-decode Jsonfile T))
         (link (cons "status" (if (info (pack *Admin_path "etc/status_update.txt")) (update-status-update) 'null) ]
 
 [de update-status-update ()
@@ -30,7 +30,7 @@
     (make (update-status) (link (cons "log" Log)) (when Message (link (cons "error-message" Message))) (when Code (link (cons "error-code" Code) ]
 
 (de api-request-get ()
-  (response-json (encode (update-process))) )
+  (response-json (json-encode (update-process))) )
 
 (de api-request-file (File)
   (call 'mv "-f" File (pack *Upload_path "software_package-zzz.enc"))

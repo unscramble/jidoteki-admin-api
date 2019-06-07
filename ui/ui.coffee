@@ -176,7 +176,17 @@ loadSupport = ->
 
   fetchData "/api/v1/admin/version", (err, result) ->
     unless err
-      $('.jido-data-platform-version').html validator.escape(result.version)
+      fetchData "/api/v1/admin/logfiles", (err, result2) ->
+        unless err
+          $('.jido-data-platform-version').html validator.escape(result.version)
+          logFiles = ""
+          for value, key in result2.logfiles
+            fileSize = switch
+              when value.size < 1024 then "#{value.size}B"
+              else "#{Math.round(value.size/1024)}KB"
+            logFiles = logFiles + "<a class=\"list-group-item logfile-select\" data-text=\"#{value.name}\" href=\"#log-viewer\"><i class=\"fa icon-doc-text\"></i> #{value.name} (#{fileSize}) <i class=\"fa icon-right-circled text-info pull-right\"></i></a>"
+          $('.jido-data-logfiles').html logFiles
+          logFilesListener()
 
 loadMonitor = ->
   $('#jido-page-login').hide()
@@ -603,6 +613,32 @@ dhcpStaticListener = ->
     $('#ip_address-input').prop('disabled', false)
     $('#netmask-input').prop('disabled', false)
     $('#gateway-input').prop('disabled', false)
+
+logFilesListener = ->
+  $(".logfile-select").click ->
+    msg = $(this).attr 'data-text'
+    fetchDataParams "/api/v1/admin/logfiles/log", "&filename=#{msg}&lines=10", (err, result) ->
+      unless err
+        $("#jido-data-logfiles-log-viewer span.title").html " #{msg} (last 10 lines)"
+        $("#jido-data-logfiles-file-full span.title").html " Show full #{msg}"
+        $("#jido-data-logfiles-file-full").attr 'data-text', msg
+        $("#jido-data-logfiles-file-download span.title").html " Download #{msg}"
+        $("#jido-data-logfiles-file-download").attr 'data-text', msg
+        $("#jido-data-logfiles-file-full").show()
+        $("#jido-data-logfiles-file-download").show()
+        $(".jido-data-logfiles-log").html(if result then validator.escape(result) else "No log file found")
+
+  $("#jido-data-logfiles-file-full").click ->
+    msg = $(this).attr 'data-text'
+    fetchDataParams "/api/v1/admin/logfiles/log", "&filename=#{msg}", (err, result) ->
+      unless err
+        $("#jido-data-logfiles-log-viewer span.title").html " #{msg} (full log)"
+        $(".jido-data-logfiles-log").html(if result then validator.escape(result) else "No log file found")
+
+  $("#jido-data-logfiles-file-download").click ->
+    msg = $(this).attr 'data-text'
+    fetchFileParams "/api/v1/admin/logfiles/download", "&filename=#{msg}", (err, result) ->
+      return
 
 navbarListener = ->
   $('#jido-page-navbar .navbar-nav li a').click ->

@@ -9,28 +9,55 @@
   .row
     .col-lg-10.col-md-10.col-sm-10.col-lg-offset-1.col-md-offset-1
       h1.page-header Support
-  .row
-    .col-lg-10.col-md-10.col-sm-12.col-lg-offset-1.col-md-offset-1
-      h4 Download
-      .list-group
-        a#jido-data-logs-files.list-group-item(href='#')
-          h4.list-group-item-heading
-            i.fa.icon-file-archive
-            |  Log files (logs.tar.gz)
-          p.list-group-item-text
-            | Server activity and log files to help troubleshoot various issues.
-        a#jido-data-debug-files.list-group-item(href='#')
-          h4.list-group-item-heading
-            i.fa.icon-bug
-            |  Debug files (debug-bundle.tar)
-          p.list-group-item-text
-            | Encrypted logs and system debugging information. Send this to the application developpers for additional support and troubleshooting.
 
-      h4 View
-      .list-group
-        a.list-group-item(href='/docs/')
-          h4.list-group-item-heading
-            i.fa.icon-help-circled
-            |  Admin API documentation
-          p.list-group-item-text Provides information on using the Admin API for console and programmable access.
+  .row
+    .col-lg-3.col-md-3.col-sm-12.col-lg-offset-1.col-md-offset-1
+      h4 Log files
+      .list-group.jido-data-logfiles
+
+    .col-lg-7.col-md-7.col-sm-12
+      .row
+        .col-lg-12.col-md-12.col-sm-12
+          h4 Download
+          .list-group
+            a#jido-data-logs-files.list-group-item(href='#', onclick='return event.preventDefault();')
+              h4.list-group-item-heading
+                i.fa.icon-file-archive
+                |  Download log files (logs.tar.gz)
+              p.list-group-item-text
+                | Server activity and log files to help troubleshoot various issues.
+            a#jido-data-debug-files.list-group-item(href='#', onclick='return event.preventDefault();')
+              h4.list-group-item-heading
+                i.fa.icon-bug
+                |  Download debug files (debug-bundle.tar)
+              p.list-group-item-text
+                | Encrypted system debugging information. Send this to the application developpers for additional support and troubleshooting.
+
+          h4 View
+          .list-group
+            a.list-group-item(href='/docs/')
+              h4.list-group-item-heading
+                i.fa.icon-help-circled
+                |  View admin API documentation
+              p.list-group-item-text Provides information on using the Admin API for console and programmable access.
+
+          a(name='log-viewer')
+          h4 Log viewer
+          .panel.panel-default.jido-panel#jido-data-logfiles-log-viewer
+            .panel-heading
+              h3.panel-title
+                i.fa.icon-doc-text
+                span.title  Log file (last 10 lines)
+            .panel-body
+              pre.jido-info.jido-data-logfiles-log ....select a log file
+          .list-group
+            a#jido-data-logfiles-file-full.list-group-item(href='#log-viewer', style='display:none;')
+              h4.list-group-item-heading
+                i.fa.icon-right-circled
+                span.title
+            a#jido-data-logfiles-file-download.list-group-item(href='#', style='display:none;', onclick='return event.preventDefault();')
+              h4.list-group-item-heading
+                i.fa.icon-file-archive
+                span.title
+
 // /#support container

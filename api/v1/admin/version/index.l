@@ -9,7 +9,7 @@
 
 [de api-request-get ()
   (if (version-number)
-      (response-json (encode (list (cons "version" @))))
+      (response-json (json-encode (list (cons "version" @))))
       (http-msg 404) ]
 
 (check-auth "GET")

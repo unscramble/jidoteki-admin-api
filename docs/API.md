@@ -7,6 +7,10 @@ system, and application settings using well-known tools such as _curl_, or _REST
 
 ## <a name="changelog"></a>ChangeLog
 
+### v1.24.0
+
+* `GET /logfiles`
+
 ### v1.23.0
 
 * `GET /certs` returns "200 OK" and null values if status and log don't exist
@@ -1675,4 +1679,4 @@ Content-Type: application/json
 
 ----
 
-Powered by on-premises.com - v1.23.0 - [Copyright notices](/docs/NOTICE.TXT)
+Powered by on-premises.com - v1.24.0 - [Copyright notices](/docs/NOTICE.TXT)

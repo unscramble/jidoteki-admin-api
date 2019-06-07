@@ -4,13 +4,15 @@ cache: apt
 dist: precise
 
 before_script:
-  - wget http://software-lab.de/picoLisp-16.6.tgz -O /tmp/picolisp.tgz
+  - wget https://software-lab.de/picoLisp-18.12.tgz -O /tmp/picolisp.tgz
   - cd /tmp; tar -xf /tmp/picolisp.tgz
+  - cd /tmp/picoLisp; wget https://software-lab.de/x86-64.linux.tgz
+  - tar -xf x86-64.linux.tgz
   - cd /tmp/picoLisp/src64 && make
   - export PATH=$PATH:/tmp/picoLisp
   - git clone https://github.com/on-prem/jidoteki-admin /tmp/jidoteki-admin
   - sudo pip install ansible==1.8.4
-  - cd /tmp/jidoteki-admin && git checkout master && make PREFIX_DIR=/tmp
+  - cd /tmp/jidoteki-admin && git checkout v1.23.0 && make PREFIX_DIR=/tmp
 
 script:
   - cd ${TRAVIS_BUILD_DIR} && make check PREFIX_DIR=/tmp

@@ -5,6 +5,6 @@
 # Copyright (c) 2015-2017 Alexander Williams, Unscramble <license@unscramble.jp>
 
 (de api-request-get ()
-  (log-plaintext "update.log") )
+  (log-plaintext (pack *Admin_path "log/" "update.log")) )
 
 (check-auth "GET")

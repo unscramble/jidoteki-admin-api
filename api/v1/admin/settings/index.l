@@ -6,16 +6,16 @@
 
 [de settings-fetch ()
   (if (and (info (pack *Admin_path "etc/app.json")) (info (pack *Admin_path "etc/network.json")))
-      (let (App     (decode (pack *Admin_path "etc/app.json") T)
-            Network (decode (pack *Admin_path "etc/network.json") T) )
+      (let (App     (json-decode (pack *Admin_path "etc/app.json") T)
+            Network (json-decode (pack *Admin_path "etc/network.json") T) )
 
-        (response-json (encode (list (append '("network") Network) (append '("app") App)))) )
+        (response-json (json-encode (list (append '("network") Network) (append '("app") App)))) )
       (http-msg 404) ]
 
 (de settings-static (Network App Interface Ip_address Netmask Gateway Dns1 Dns2 Hostname Ntpserver)
   # output JSON files if validation success
-  (out (pack *Upload_path "app.json") (prinl (encode App)))
-  (out (pack *Upload_path "network.json") (prinl (encode (insert 1 Network '("mode" . "static")))))
+  (out (pack *Upload_path "app.json") (prinl (json-encode App)))
+  (out (pack *Upload_path "network.json") (prinl (json-encode (insert 1 Network '("mode" . "static")))))
 
   (out (pack *Upload_path "network.conf")
     (prinl "mode=static")
@@ -34,8 +34,8 @@
 
 (de settings-dhcp (Network App Interface Hostname)
   # output JSON files if validation success
-  (out (pack *Upload_path "app.json") (prinl (encode App)))
-  (out (pack *Upload_path "network.json") (prinl (encode (insert 1 Network '("mode" . "dhcp")))))
+  (out (pack *Upload_path "app.json") (prinl (json-encode App)))
+  (out (pack *Upload_path "network.json") (prinl (json-encode (insert 1 Network '("mode" . "dhcp")))))
 
   (out (pack *Upload_path "network.conf")
     (prinl "mode=dhcp")
@@ -79,7 +79,7 @@
                 (settings-dhcp Network App Interface Hostname Ntpserver) ]
 
 [de api-request-file (File)
-  (if (decode File T)
+  (if (json-decode File T)
       (settings-store @)
       (http-msg 400) ]
 

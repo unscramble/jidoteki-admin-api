@@ -539,17 +539,37 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-lg-10 col-md-10 col-sm-12 col-lg-offset-1 col-md-offset-1">
-          <h4>Download</h4>
-          <div class="list-group"><a id="jido-data-logs-files" href="#" class="list-group-item">
-              <h4 class="list-group-item-heading"><i class="fa icon-file-archive"></i> Log files (logs.tar.gz)</h4>
-              <p class="list-group-item-text">Server activity and log files to help troubleshoot various issues.</p></a><a id="jido-data-debug-files" href="#" class="list-group-item">
-              <h4 class="list-group-item-heading"><i class="fa icon-bug"></i> Debug files (debug-bundle.tar)</h4>
-              <p class="list-group-item-text">Encrypted logs and system debugging information. Send this to the application developpers for additional support and troubleshooting.</p></a></div>
-          <h4>View</h4>
-          <div class="list-group"><a href="/docs/" class="list-group-item">
-              <h4 class="list-group-item-heading"><i class="fa icon-help-circled"></i> Admin API documentation</h4>
-              <p class="list-group-item-text">Provides information on using the Admin API for console and programmable access.</p></a></div>
+        <div class="col-lg-3 col-md-3 col-sm-12 col-lg-offset-1 col-md-offset-1">
+          <h4>Log files</h4>
+          <div class="list-group jido-data-logfiles"></div>
+        </div>
+        <div class="col-lg-7 col-md-7 col-sm-12">
+          <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <h4>Download</h4>
+              <div class="list-group"><a id="jido-data-logs-files" href="#" onclick="return event.preventDefault();" class="list-group-item">
+                  <h4 class="list-group-item-heading"><i class="fa icon-file-archive"></i> Download log files (logs.tar.gz)</h4>
+                  <p class="list-group-item-text">Server activity and log files to help troubleshoot various issues.</p></a><a id="jido-data-debug-files" href="#" onclick="return event.preventDefault();" class="list-group-item">
+                  <h4 class="list-group-item-heading"><i class="fa icon-bug"></i> Download debug files (debug-bundle.tar)</h4>
+                  <p class="list-group-item-text">Encrypted system debugging information. Send this to the application developpers for additional support and troubleshooting.</p></a></div>
+              <h4>View</h4>
+              <div class="list-group"><a href="/docs/" class="list-group-item">
+                  <h4 class="list-group-item-heading"><i class="fa icon-help-circled"></i> View admin API documentation</h4>
+                  <p class="list-group-item-text">Provides information on using the Admin API for console and programmable access.</p></a></div><a name="log-viewer"></a>
+              <h4>Log viewer</h4>
+              <div id="jido-data-logfiles-log-viewer" class="panel panel-default jido-panel">
+                <div class="panel-heading">
+                  <h3 class="panel-title"><i class="fa icon-doc-text"></i><span class="title"> Log file (last 10 lines)</span></h3>
+                </div>
+                <div class="panel-body">
+                  <pre class="jido-info jido-data-logfiles-log">....select a log file</pre>
+                </div>
+              </div>
+              <div class="list-group"><a id="jido-data-logfiles-file-full" href="#log-viewer" style="display:none;" class="list-group-item">
+                  <h4 class="list-group-item-heading"><i class="fa icon-right-circled"></i><span class="title"></span></h4></a><a id="jido-data-logfiles-file-download" href="#" style="display:none;" onclick="return event.preventDefault();" class="list-group-item">
+                  <h4 class="list-group-item-heading"><i class="fa icon-file-archive"></i><span class="title"></span></h4></a></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

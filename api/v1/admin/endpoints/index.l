@@ -6,6 +6,6 @@
 
 [de api-request-get ()
   (let Endpoints (sort (cdr *Allow))
-    (response-json (encode (list (cons "endpoints" T (mapcar '((N) (pack "/" N)) Endpoints) ]
+    (response-json (json-encode (list (cons "endpoints" T (mapcar '((N) (pack "/" N)) Endpoints) ]
 
 (check-auth "GET")

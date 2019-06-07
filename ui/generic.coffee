@@ -60,11 +60,34 @@ fetchData = (endpoint, callback) ->
   else
     callback new Error "Missing or invalid API token"
 
+fetchDataParams = (endpoint, params, callback) ->
+  sha256 = getToken()
+  if sha256?
+    hmac = getHmac "GET#{endpoint}", sha256
+
+    $.get "#{apiServer}#{endpoint}?hash=#{hmac}#{params}"
+
+    .done (response) ->
+      callback null, response
+
+    .fail (err) ->
+      callback new Error err
+  else
+    callback new Error "Missing or invalid API token"
+
 fetchFile = (endpoint, callback) ->
   sha256 = getToken()
   if sha256?
     hmac = getHmac "GET#{endpoint}", sha256
     $(location).attr 'href', "#{apiServer}#{endpoint}?hash=#{hmac}"
+  else
+    callback new Error "Missing or invalid API token"
+
+fetchFileParams = (endpoint, params, callback) ->
+  sha256 = getToken()
+  if sha256?
+    hmac = getHmac "GET#{endpoint}", sha256
+    $(location).attr 'href', "#{apiServer}#{endpoint}?hash=#{hmac}#{params}"
   else
     callback new Error "Missing or invalid API token"
 

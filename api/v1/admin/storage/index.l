@@ -6,7 +6,7 @@
 
 [de storage-save (Settings)
   (out (pack *Upload_path "storage.json")
-    (prinl (encode Settings)) )
+    (prinl (json-encode Settings)) )
 
   (out (pack *Upload_path "storage.conf")
     (mapcar '((N)
@@ -63,7 +63,7 @@
         (storage-save Settings) ]
 
 [de api-request-file (File)
-  (if (decode File T)
+  (if (json-decode File T)
       (storage-validate @)
       (http-msg 400) ]
 
@@ -72,10 +72,10 @@
 
 [de storage-options ()
   (if (and (info "/usr/local/etc/storage-options.json") (info (pack *Admin_path "etc/storage.json")))
-      (let (Options   (if (decode "/usr/local/etc/storage-options.json" T) @ (list (cons "options" T '("local"))))
-            Settings  (decode (pack *Admin_path "etc/storage.json") T) )
+      (let (Options   (if (json-decode "/usr/local/etc/storage-options.json" T) @ (list (cons "options" T '("local"))))
+            Settings  (json-decode (pack *Admin_path "etc/storage.json") T) )
 
-        (encode (append Settings Options)) )
+        (json-encode (append Settings Options)) )
         (http-msg 404) ]
 
 (de api-request-get ()
